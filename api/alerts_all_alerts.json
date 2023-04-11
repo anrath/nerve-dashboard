@@ -1,0 +1,46 @@
+[
+    {
+        "field.unknown.not.registered": {
+            "kismet.common.location.geopoint": [
+                0,
+                0
+            ]
+        },
+        "kismet.alert.hash": 2426148771,
+        "kismet.alert.severity": 0,
+        "kismet.alert.frequency": 0,
+        "kismet.alert.dest_mac": "00:00:00:00:00:00",
+        "kismet.alert.text": "Found a httpd_username and httpd_password configuration in a global Kismet config file, such as kismet.conf, kismet_httpd.conf, or kismet_site.conf.  Any login in the user configuration file /root/.kismet/kismet_httpd.conf will be ignored.",
+        "kismet.alert.class": "SYSTEM",
+        "kismet.alert.other_mac": "00:00:00:00:00:00",
+        "kismet.alert.channel": "",
+        "kismet.alert.phy_id": 4294967295,
+        "kismet.alert.device_key": "00_0",
+        "kismet.alert.transmitter_mac": "00:00:00:00:00:00",
+        "kismet.alert.timestamp": 1681162293.814705,
+        "kismet.alert.header": "GLOBALHTTPDUSER",
+        "kismet.alert.source_mac": "00:00:00:00:00:00"
+    },
+    {
+        "field.unknown.not.registered": {
+            "kismet.common.location.geopoint": [
+                0,
+                0
+            ]
+        },
+        "kismet.alert.hash": 3517847015,
+        "kismet.alert.severity": 15,
+        "kismet.alert.frequency": 0,
+        "kismet.alert.dest_mac": "00:00:00:00:00:00",
+        "kismet.alert.text": "Kismet is running as root; this is less secure.  If you are running Kismet at boot via systemd, make sure to use `systemctl edit kismet.service` to change the user.  For more information, see the Kismet README for setting up Kismet with minimal privileges.",
+        "kismet.alert.class": "SYSTEM",
+        "kismet.alert.other_mac": "00:00:00:00:00:00",
+        "kismet.alert.channel": "",
+        "kismet.alert.phy_id": 4294967294,
+        "kismet.alert.device_key": "00_0",
+        "kismet.alert.transmitter_mac": "00:00:00:00:00:00",
+        "kismet.alert.timestamp": 1681162293.898239,
+        "kismet.alert.header": "ROOTUSER",
+        "kismet.alert.source_mac": "00:00:00:00:00:00"
+    }
+]
