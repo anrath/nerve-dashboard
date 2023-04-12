@@ -1,4 +1,4 @@
-# online-ddos-detection
+# kismet-api-dashboard
 
 ## Setup
 - If working in a virtual env: `pip install -r requirements.txt`
