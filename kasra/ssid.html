@@ -1,0 +1,453 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "eduroam", "label": "eduroam", "shape": "diamond", "title": "eduroam Neighbors:\nDC:B5:4F:57:E0:F9\nE8:5F:02:8C:E2:2B\nA4:B1:C1:36:48:81\nC8:89:F3:B4:44:DF\n54:32:C7:0E:49:3F\nC4:C3:6B:85:54:B9\n3C:06:30:39:6A:08\n3C:A6:F6:29:ED:30\nD4:3A:2C:7F:8A:E4\n4C:79:6E:1F:DA:A1\n64:6D:2F:6F:C2:3F\n1C:57:DC:29:BB:47\n8C:98:6B:4A:63:EC\n0C:51:01:9B:CE:16\nF8:4D:89:5D:34:36\n58:B9:65:56:1C:93\n84:FD:D1:3B:26:08\n58:B9:65:27:CB:FF\nAC:C9:06:6B:47:53\n08:87:C7:29:F8:70\n64:6D:2F:DC:CA:F5\n28:02:44:31:ED:43\n50:23:A2:E4:58:5D\n44:DA:30:47:37:F4\n1C:71:25:34:C7:30\n70:B3:06:0D:CC:A9\nA0:80:69:FE:C4:69\n0C:19:F8:37:A3:DE\nE8:A7:30:48:FB:B8\nB8:7B:C5:EE:22:C8\n04:6C:59:10:0D:1A\n44:F0:9E:B6:D9:51\n78:64:C0:5F:B7:ED\n3C:8C:F8:FE:2F:61\n9C:2F:9D:93:95:73\nAE:6B:43:E9:D4:EF\nC4:03:A8:35:A6:BF\n3C:7D:0A:70:27:25\nA8:91:3D:54:73:BC\nB8:49:6D:87:5F:8E\nFE:BA:AF:DB:CB:0F\n8C:EC:7B:7A:44:B8\n18:FA:B7:F0:2E:7B\n58:64:C4:12:FC:DE\n7C:A1:AE:C0:6C:69\n88:C0:8B:86:CC:8F\n4C:E6:C0:D7:8A:99\n28:DF:EB:15:35:4C\nE0:2B:96:DE:B0:DA\nE8:5F:02:38:7F:DE\nB6:86:EA:36:60:51\n5E:C1:DB:45:8F:4B\n32:1A:BB:8A:6E:8A\nD0:AB:D5:15:E5:87\nF4:DB:E3:0F:22:1D\n14:88:E6:82:C5:1C\n32:83:4B:E0:80:5C\n88:66:5A:79:37:D3\n3C:7D:0A:C8:27:FD\n8C:7A:AA:7D:5E:6F\n00:93:37:CB:A9:80\nF8:10:93:7D:F1:27\nCC:40:D0:56:8F:A2\n80:0C:67:7A:C9:07\nA0:E7:0B:D2:7C:1F\nDC:B5:4F:52:6A:C3\n08:C7:29:73:5A:D9\nC0:25:E9:24:43:6E\n60:83:73:35:61:2D", "value": 69}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "04:6C:59:10:0D:1A", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "04:6C:59:10:0D:1A", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "78:64:C0:5F:B7:ED", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "78:64:C0:5F:B7:ED", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "1C:71:25:34:C7:30", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "1C:71:25:34:C7:30", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "F8:10:93:7D:F1:27", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "F8:10:93:7D:F1:27", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "9C:2F:9D:93:95:73", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "9C:2F:9D:93:95:73", "shape": "circularImage", "title": "9C:2F:9D:93:95:73 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DC:B5:4F:52:6A:C3", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "DC:B5:4F:52:6A:C3", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "08:87:C7:29:F8:70", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "08:87:C7:29:F8:70", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "28:DF:EB:15:35:4C", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "28:DF:EB:15:35:4C", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "E0:2B:96:DE:B0:DA", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "E0:2B:96:DE:B0:DA", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "CC:40:D0:56:8F:A2", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "CC:40:D0:56:8F:A2", "shape": "circularImage", "title": "CC:40:D0:56:8F:A2 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "3C:7D:0A:70:27:25", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "3C:7D:0A:70:27:25", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "A0:80:69:FE:C4:69", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "A0:80:69:FE:C4:69", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "B8:7B:C5:EE:22:C8", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "B8:7B:C5:EE:22:C8", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "D4:3A:2C:7F:8A:E4", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "D4:3A:2C:7F:8A:E4", "shape": "circularImage", "title": "D4:3A:2C:7F:8A:E4 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "44:DA:30:47:37:F4", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "44:DA:30:47:37:F4", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "C0:25:E9:24:43:6E", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "C0:25:E9:24:43:6E", "shape": "circularImage", "title": "C0:25:E9:24:43:6E Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "3C:7D:0A:C8:27:FD", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "3C:7D:0A:C8:27:FD", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "32:83:4B:E0:80:5C", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "32:83:4B:E0:80:5C", "shape": "circularImage", "title": "32:83:4B:E0:80:5C Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "AC:C9:06:6B:47:53", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "AC:C9:06:6B:47:53", "shape": "circularImage", "title": "AC:C9:06:6B:47:53 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "70:B3:06:0D:CC:A9", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "70:B3:06:0D:CC:A9", "shape": "circularImage", "title": "70:B3:06:0D:CC:A9 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "E8:A7:30:48:FB:B8", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "E8:A7:30:48:FB:B8", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "54:32:C7:0E:49:3F", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "54:32:C7:0E:49:3F", "shape": "circularImage", "title": "54:32:C7:0E:49:3F Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "AE:6B:43:E9:D4:EF", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "AE:6B:43:E9:D4:EF", "shape": "circularImage", "title": "AE:6B:43:E9:D4:EF Neighbors:\neduroam\nXFSetup", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "8C:98:6B:4A:63:EC", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "8C:98:6B:4A:63:EC", "shape": "circularImage", "title": "8C:98:6B:4A:63:EC Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "88:66:5A:79:37:D3", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "88:66:5A:79:37:D3", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "C8:89:F3:B4:44:DF", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "C8:89:F3:B4:44:DF", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "A0:E7:0B:D2:7C:1F", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "A0:E7:0B:D2:7C:1F", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "60:83:73:35:61:2D", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "60:83:73:35:61:2D", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "5E:C1:DB:45:8F:4B", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "5E:C1:DB:45:8F:4B", "shape": "circularImage", "title": "5E:C1:DB:45:8F:4B Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "A4:B1:C1:36:48:81", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "A4:B1:C1:36:48:81", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "3C:8C:F8:FE:2F:61", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "3C:8C:F8:FE:2F:61", "shape": "circularImage", "title": "3C:8C:F8:FE:2F:61 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "3C:06:30:39:6A:08", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "3C:06:30:39:6A:08", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "B6:86:EA:36:60:51", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "B6:86:EA:36:60:51", "shape": "circularImage", "title": "B6:86:EA:36:60:51 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "7C:A1:AE:C0:6C:69", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "7C:A1:AE:C0:6C:69", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "F8:4D:89:5D:34:36", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "F8:4D:89:5D:34:36", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "44:F0:9E:B6:D9:51", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "44:F0:9E:B6:D9:51", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "80:0C:67:7A:C9:07", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "80:0C:67:7A:C9:07", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "C4:03:A8:35:A6:BF", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "C4:03:A8:35:A6:BF", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "64:6D:2F:DC:CA:F5", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "64:6D:2F:DC:CA:F5", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "C4:C3:6B:85:54:B9", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "C4:C3:6B:85:54:B9", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "88:C0:8B:86:CC:8F", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "88:C0:8B:86:CC:8F", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "8C:7A:AA:7D:5E:6F", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "8C:7A:AA:7D:5E:6F", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "3C:A6:F6:29:ED:30", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "3C:A6:F6:29:ED:30", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "B8:49:6D:87:5F:8E", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "B8:49:6D:87:5F:8E", "shape": "circularImage", "title": "B8:49:6D:87:5F:8E Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "58:64:C4:12:FC:DE", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "58:64:C4:12:FC:DE", "shape": "circularImage", "title": "58:64:C4:12:FC:DE Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DC:B5:4F:57:E0:F9", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "DC:B5:4F:57:E0:F9", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam\nTMobileWingman", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "4C:E6:C0:D7:8A:99", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "4C:E6:C0:D7:8A:99", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "4C:79:6E:1F:DA:A1", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "4C:79:6E:1F:DA:A1", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "58:B9:65:56:1C:93", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "58:B9:65:56:1C:93", "shape": "circularImage", "title": "58:B9:65:56:1C:93 Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "64:6D:2F:6F:C2:3F", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "64:6D:2F:6F:C2:3F", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "50:23:A2:E4:58:5D", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "50:23:A2:E4:58:5D", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "08:C7:29:73:5A:D9", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "08:C7:29:73:5A:D9", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "32:1A:BB:8A:6E:8A", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "32:1A:BB:8A:6E:8A", "shape": "circularImage", "title": "32:1A:BB:8A:6E:8A Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "A8:91:3D:54:73:BC", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "A8:91:3D:54:73:BC", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "00:93:37:CB:A9:80", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "00:93:37:CB:A9:80", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "0C:19:F8:37:A3:DE", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "0C:19:F8:37:A3:DE", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "1C:57:DC:29:BB:47", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "1C:57:DC:29:BB:47", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "18:FA:B7:F0:2E:7B", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "18:FA:B7:F0:2E:7B", "shape": "circularImage", "title": "18:FA:B7:F0:2E:7B Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "0C:51:01:9B:CE:16", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "0C:51:01:9B:CE:16", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "E8:5F:02:8C:E2:2B", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "E8:5F:02:8C:E2:2B", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "F4:DB:E3:0F:22:1D", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "F4:DB:E3:0F:22:1D", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "E8:5F:02:38:7F:DE", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "E8:5F:02:38:7F:DE", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "58:B9:65:27:CB:FF", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "58:B9:65:27:CB:FF", "shape": "circularImage", "title": "58:B9:65:27:CB:FF Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "8C:EC:7B:7A:44:B8", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "8C:EC:7B:7A:44:B8", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "84:FD:D1:3B:26:08", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "84:FD:D1:3B:26:08", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "FE:BA:AF:DB:CB:0F", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "FE:BA:AF:DB:CB:0F", "shape": "circularImage", "title": "FE:BA:AF:DB:CB:0F Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "28:02:44:31:ED:43", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "28:02:44:31:ED:43", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "14:88:E6:82:C5:1C", "image": "https://raw.githubusercontent.com/anrath/data/master/apple_logo.png", "label": "14:88:E6:82:C5:1C", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "D0:AB:D5:15:E5:87", "image": "https://raw.githubusercontent.com/anrath/data/master/intel_logo.jpg", "label": "D0:AB:D5:15:E5:87", "shape": "circularImage", "title": "eduroam Neighbors:\neduroam", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "UVA Guest", "label": "UVA Guest", "shape": "diamond", "title": "UVA Guest Neighbors:\n66:20:5C:08:1E:11\n26:49:FC:57:7A:A8", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "26:49:FC:57:7A:A8", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "26:49:FC:57:7A:A8", "shape": "circularImage", "title": "26:49:FC:57:7A:A8 Neighbors:\nUVA Guest", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "66:20:5C:08:1E:11", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "66:20:5C:08:1E:11", "shape": "circularImage", "title": "66:20:5C:08:1E:11 Neighbors:\nUVA Guest", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "wahoo", "label": "wahoo", "shape": "diamond", "title": "wahoo Neighbors:\nF8:0D:AC:C2:73:51\n04:03:D6:74:45:32\n4C:D5:77:2B:EA:31", "value": 3}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "04:03:D6:74:45:32", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "04:03:D6:74:45:32", "shape": "circularImage", "title": "04:03:D6:74:45:32 Neighbors:\nwahoo", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "F8:0D:AC:C2:73:51", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "F8:0D:AC:C2:73:51", "shape": "circularImage", "title": "F8:0D:AC:C2:73:51 Neighbors:\nwahoo", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "4C:D5:77:2B:EA:31", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "4C:D5:77:2B:EA:31", "shape": "circularImage", "title": "4C:D5:77:2B:EA:31 Neighbors:\nwahoo", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "Freepro-NTZLIT", "label": "Freepro-NTZLIT", "shape": "diamond", "title": "Freepro-NTZLIT Neighbors:\nDA:A1:19:A0:84:B3\nDA:A1:19:33:8D:58\nDA:A1:19:64:36:4B", "value": 3}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DA:A1:19:A0:84:B3", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "DA:A1:19:A0:84:B3", "shape": "circularImage", "title": "DA:A1:19:A0:84:B3 Neighbors:\nFreepro-NTZLIT\nYZFamily", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DA:A1:19:64:36:4B", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "DA:A1:19:64:36:4B", "shape": "circularImage", "title": "DA:A1:19:64:36:4B Neighbors:\nFreepro-NTZLIT\nYZFamily", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DA:A1:19:33:8D:58", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "DA:A1:19:33:8D:58", "shape": "circularImage", "title": "DA:A1:19:33:8D:58 Neighbors:\nFreepro-NTZLIT", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "YZFamily", "label": "YZFamily", "shape": "diamond", "title": "YZFamily Neighbors:\nDA:A1:19:A0:84:B3\nDA:A1:19:64:36:4B", "value": 2}, {"font": {"color": "white"}, "group": 1, "id": "Starbucks WiFi", "label": "Starbucks WiFi", "shape": "diamond", "title": "Starbucks WiFi Neighbors:\n4A:F3:79:EE:65:A3", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "4A:F3:79:EE:65:A3", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "4A:F3:79:EE:65:A3", "shape": "circularImage", "title": "4A:F3:79:EE:65:A3 Neighbors:\nStarbucks WiFi", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "Grit-Stonefield", "label": "Grit-Stonefield", "shape": "diamond", "title": "Grit-Stonefield Neighbors:\n0E:C5:CF:D1:85:79", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "0E:C5:CF:D1:85:79", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "0E:C5:CF:D1:85:79", "shape": "circularImage", "title": "0E:C5:CF:D1:85:79 Neighbors:\nGrit-Stonefield", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "Petit Palace Museum", "label": "Petit Palace Museum", "shape": "diamond", "title": "Petit Palace Museum Neighbors:\n16:25:D1:0B:C3:F2\nEA:F6:01:99:9A:A2", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "EA:F6:01:99:9A:A2", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "EA:F6:01:99:9A:A2", "shape": "circularImage", "title": "EA:F6:01:99:9A:A2 Neighbors:\nPetit Palace Museum", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "16:25:D1:0B:C3:F2", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "16:25:D1:0B:C3:F2", "shape": "circularImage", "title": "16:25:D1:0B:C3:F2 Neighbors:\nPetit Palace Museum", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "FIRST HOTEL", "label": "FIRST HOTEL", "shape": "diamond", "title": "FIRST HOTEL Neighbors:\n1E:6D:89:B2:1B:C7", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "1E:6D:89:B2:1B:C7", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "1E:6D:89:B2:1B:C7", "shape": "circularImage", "title": "1E:6D:89:B2:1B:C7 Neighbors:\nFIRST HOTEL", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "RIC", "label": "RIC", "shape": "diamond", "title": "RIC Neighbors:\nDE:3A:A2:8D:69:82", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "DE:3A:A2:8D:69:82", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "DE:3A:A2:8D:69:82", "shape": "circularImage", "title": "DE:3A:A2:8D:69:82 Neighbors:\nRIC", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "GlamHotelWiFi", "label": "GlamHotelWiFi", "shape": "diamond", "title": "GlamHotelWiFi Neighbors:\n96:64:5A:83:72:BF", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "96:64:5A:83:72:BF", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "96:64:5A:83:72:BF", "shape": "circularImage", "title": "96:64:5A:83:72:BF Neighbors:\nGlamHotelWiFi", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "ISO ISO RAMEN AND BAR", "label": "ISO ISO RAMEN AND BAR", "shape": "diamond", "title": "ISO ISO RAMEN AND BAR Neighbors:\nE2:B2:E6:32:AD:5F\nB2:E6:B4:4D:D0:31", "value": 2}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "E2:B2:E6:32:AD:5F", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "E2:B2:E6:32:AD:5F", "shape": "circularImage", "title": "E2:B2:E6:32:AD:5F Neighbors:\nISO ISO RAMEN AND BAR", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "B2:E6:B4:4D:D0:31", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "B2:E6:B4:4D:D0:31", "shape": "circularImage", "title": "B2:E6:B4:4D:D0:31 Neighbors:\nISO ISO RAMEN AND BAR", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "Visitor", "label": "Visitor", "shape": "diamond", "title": "Visitor Neighbors:\n6A:90:6B:D2:7F:70", "value": 1}, {"brokenImage": "circle", "font": {"color": "white"}, "group": 3, "id": "6A:90:6B:D2:7F:70", "image": "https://raw.githubusercontent.com/anrath/data/master/blank.png", "label": "6A:90:6B:D2:7F:70", "shape": "circularImage", "title": "6A:90:6B:D2:7F:70 Neighbors:\nVisitor", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "TMobileWingman", "label": "TMobileWingman", "shape": "diamond", "title": "TMobileWingman Neighbors:\nDC:B5:4F:57:E0:F9", "value": 1}, {"font": {"color": "white"}, "group": 1, "id": "XFSetup", "label": "XFSetup", "shape": "diamond", "title": "XFSetup Neighbors:\nAE:6B:43:E9:D4:EF", "value": 1}]);
+                  edges = new vis.DataSet([{"from": "eduroam", "to": "04:6C:59:10:0D:1A"}, {"from": "eduroam", "to": "78:64:C0:5F:B7:ED"}, {"from": "eduroam", "to": "1C:71:25:34:C7:30"}, {"from": "eduroam", "to": "F8:10:93:7D:F1:27"}, {"from": "eduroam", "to": "9C:2F:9D:93:95:73"}, {"from": "eduroam", "to": "DC:B5:4F:52:6A:C3"}, {"from": "eduroam", "to": "08:87:C7:29:F8:70"}, {"from": "eduroam", "to": "28:DF:EB:15:35:4C"}, {"from": "eduroam", "to": "E0:2B:96:DE:B0:DA"}, {"from": "eduroam", "to": "CC:40:D0:56:8F:A2"}, {"from": "eduroam", "to": "3C:7D:0A:70:27:25"}, {"from": "eduroam", "to": "A0:80:69:FE:C4:69"}, {"from": "eduroam", "to": "B8:7B:C5:EE:22:C8"}, {"from": "eduroam", "to": "D4:3A:2C:7F:8A:E4"}, {"from": "eduroam", "to": "44:DA:30:47:37:F4"}, {"from": "eduroam", "to": "C0:25:E9:24:43:6E"}, {"from": "eduroam", "to": "3C:7D:0A:C8:27:FD"}, {"from": "eduroam", "to": "32:83:4B:E0:80:5C"}, {"from": "eduroam", "to": "AC:C9:06:6B:47:53"}, {"from": "eduroam", "to": "70:B3:06:0D:CC:A9"}, {"from": "eduroam", "to": "E8:A7:30:48:FB:B8"}, {"from": "eduroam", "to": "54:32:C7:0E:49:3F"}, {"from": "eduroam", "to": "AE:6B:43:E9:D4:EF"}, {"from": "eduroam", "to": "8C:98:6B:4A:63:EC"}, {"from": "eduroam", "to": "88:66:5A:79:37:D3"}, {"from": "eduroam", "to": "C8:89:F3:B4:44:DF"}, {"from": "eduroam", "to": "A0:E7:0B:D2:7C:1F"}, {"from": "eduroam", "to": "60:83:73:35:61:2D"}, {"from": "eduroam", "to": "5E:C1:DB:45:8F:4B"}, {"from": "eduroam", "to": "A4:B1:C1:36:48:81"}, {"from": "eduroam", "to": "3C:8C:F8:FE:2F:61"}, {"from": "eduroam", "to": "3C:06:30:39:6A:08"}, {"from": "eduroam", "to": "B6:86:EA:36:60:51"}, {"from": "eduroam", "to": "7C:A1:AE:C0:6C:69"}, {"from": "eduroam", "to": "F8:4D:89:5D:34:36"}, {"from": "eduroam", "to": "44:F0:9E:B6:D9:51"}, {"from": "eduroam", "to": "80:0C:67:7A:C9:07"}, {"from": "eduroam", "to": "C4:03:A8:35:A6:BF"}, {"from": "eduroam", "to": "64:6D:2F:DC:CA:F5"}, {"from": "eduroam", "to": "C4:C3:6B:85:54:B9"}, {"from": "eduroam", "to": "88:C0:8B:86:CC:8F"}, {"from": "eduroam", "to": "8C:7A:AA:7D:5E:6F"}, {"from": "eduroam", "to": "3C:A6:F6:29:ED:30"}, {"from": "eduroam", "to": "B8:49:6D:87:5F:8E"}, {"from": "eduroam", "to": "58:64:C4:12:FC:DE"}, {"from": "eduroam", "to": "DC:B5:4F:57:E0:F9"}, {"from": "eduroam", "to": "4C:E6:C0:D7:8A:99"}, {"from": "eduroam", "to": "4C:79:6E:1F:DA:A1"}, {"from": "eduroam", "to": "58:B9:65:56:1C:93"}, {"from": "eduroam", "to": "64:6D:2F:6F:C2:3F"}, {"from": "eduroam", "to": "50:23:A2:E4:58:5D"}, {"from": "eduroam", "to": "08:C7:29:73:5A:D9"}, {"from": "eduroam", "to": "32:1A:BB:8A:6E:8A"}, {"from": "eduroam", "to": "A8:91:3D:54:73:BC"}, {"from": "eduroam", "to": "00:93:37:CB:A9:80"}, {"from": "eduroam", "to": "0C:19:F8:37:A3:DE"}, {"from": "eduroam", "to": "1C:57:DC:29:BB:47"}, {"from": "eduroam", "to": "18:FA:B7:F0:2E:7B"}, {"from": "eduroam", "to": "0C:51:01:9B:CE:16"}, {"from": "eduroam", "to": "E8:5F:02:8C:E2:2B"}, {"from": "eduroam", "to": "F4:DB:E3:0F:22:1D"}, {"from": "eduroam", "to": "E8:5F:02:38:7F:DE"}, {"from": "eduroam", "to": "58:B9:65:27:CB:FF"}, {"from": "eduroam", "to": "8C:EC:7B:7A:44:B8"}, {"from": "eduroam", "to": "84:FD:D1:3B:26:08"}, {"from": "eduroam", "to": "FE:BA:AF:DB:CB:0F"}, {"from": "eduroam", "to": "28:02:44:31:ED:43"}, {"from": "eduroam", "to": "14:88:E6:82:C5:1C"}, {"from": "eduroam", "to": "D0:AB:D5:15:E5:87"}, {"from": "UVA Guest", "to": "26:49:FC:57:7A:A8"}, {"from": "UVA Guest", "to": "66:20:5C:08:1E:11"}, {"from": "wahoo", "to": "04:03:D6:74:45:32"}, {"from": "wahoo", "to": "F8:0D:AC:C2:73:51"}, {"from": "wahoo", "to": "4C:D5:77:2B:EA:31"}, {"from": "Freepro-NTZLIT", "to": "DA:A1:19:A0:84:B3"}, {"from": "Freepro-NTZLIT", "to": "DA:A1:19:64:36:4B"}, {"from": "Freepro-NTZLIT", "to": "DA:A1:19:33:8D:58"}, {"from": "YZFamily", "to": "DA:A1:19:A0:84:B3"}, {"from": "YZFamily", "to": "DA:A1:19:64:36:4B"}, {"from": "Starbucks WiFi", "to": "4A:F3:79:EE:65:A3"}, {"from": "Grit-Stonefield", "to": "0E:C5:CF:D1:85:79"}, {"from": "Petit Palace Museum", "to": "EA:F6:01:99:9A:A2"}, {"from": "Petit Palace Museum", "to": "16:25:D1:0B:C3:F2"}, {"from": "FIRST HOTEL", "to": "1E:6D:89:B2:1B:C7"}, {"from": "RIC", "to": "DE:3A:A2:8D:69:82"}, {"from": "GlamHotelWiFi", "to": "96:64:5A:83:72:BF"}, {"from": "ISO ISO RAMEN AND BAR", "to": "E2:B2:E6:32:AD:5F"}, {"from": "ISO ISO RAMEN AND BAR", "to": "B2:E6:B4:4D:D0:31"}, {"from": "Visitor", "to": "6A:90:6B:D2:7F:70"}, {"from": "TMobileWingman", "to": "DC:B5:4F:57:E0:F9"}, {"from": "XFSetup", "to": "AE:6B:43:E9:D4:EF"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
