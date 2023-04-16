@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<head>
+
+</head>
+
+<body>
+    <h1>Here is WLAN data shown as a pandas dataframe (df.head data only for viewing purposes)!</h1>
+    {% for t in table %} 
+    {{ t|safe }} 
+    {% endfor %}
+</body>
