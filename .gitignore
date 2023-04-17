@@ -1,6 +1,7 @@
 # data files
 */data/*/
 /kasra/example
+/api1/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,3 +132,41 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# tests and coverage
+*.pytest_cache
+.coverage
+
+# database & logs
+*.db
+*.sqlite3
+*.log
+
+# venv
+env
+venv
+
+# other
+.DS_Store
+
+# sphinx docs 
+_build
+_static
+_templates
+
+# javascript
+package-lock.json
+.vscode/symbols.json
+
+apps/static/assets/node_modules
+apps/static/assets/yarn.lock
+apps/static/assets/.temp
+
+
+migrations
+

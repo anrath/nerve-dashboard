@@ -69,6 +69,11 @@ def mpl():
     return render_template('matplot.html',
                            PageTitle = "Matplotlib")
 
+@app.route('/net-graph', methods=("POST", "GET"))
+def ng():
+    return render_template('net-graph.html',
+                           PageTitle = "Network Graph")
+
 
 @app.route('/plot.png')
 def plot_png():
