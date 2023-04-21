@@ -22,6 +22,7 @@ from io import BytesIO
 import base64
 
 from wlan_script import wlan_devicetype_dist, get_wlan_df, wlan_devicename_dist, wlan_manuf_dist, time_data_graph, time_pck_scatter, pck_hist
+from bt_script import *
 
 
 app = Flask(__name__)
@@ -45,6 +46,12 @@ def mpl():
 def ng():
     return render_template('net-graph.html',
                            PageTitle = "Network Graph")
+
+params=bt_params()
+@app.route('/bt_visuals', methods=("POST", "GET"))
+def bt():
+    return render_template('bt_visuals.html',
+                           PageTitle = "Bluetooth Visuals", params=params)
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -94,6 +101,34 @@ def plot_pck_hist():
     return Response(output.getvalue(), mimetype='image/png')
 
 #END WLAN CHARTS
+
+#------------------------------------------------------------------------------------------------------------------
+
+# BLUETOOTH CHARTS
+
+@app.route('/bt_devicetype_dist.png')
+def plot_bt_devicetype_dist():
+    fig = bt_devicetype_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/bt_devicename_dist.png')
+def plot_bt_devicename_dist():
+    fig_name = bt_devicename_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig_name.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/bt_manuf_dist.png')
+def plot_bt_manuf_dist():
+    fig_manuf = bt_manuf_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig_manuf.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+#END BLUETOOTH CHARTS
 
 #------------------------------------------------------------------------------------------------------------------
 
