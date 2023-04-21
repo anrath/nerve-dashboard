@@ -21,53 +21,25 @@ import warnings
 from io import BytesIO
 import base64
 
-
-#Data imports
-with open('phy-IEEE802.11.json') as openfile:
-    wlan = json.load(openfile)
-
-wlan_df = pd.DataFrame()
-
-for device in wlan:    
-    wlan_data = {
-        "key": [device['kismet.device.base.key']], 
-        "device_name": [device['kismet.device.base.name']],
-        "device_type": [device['kismet.device.base.type']],
-        "num_packets": [device['kismet.device.base.packets.total']],
-        "manuf": [device['kismet.device.base.manuf']], 
-        "macaddr": [device['kismet.device.base.macaddr']],
-        "channel": [device['kismet.device.base.channel']],
-        "first_seen": [device['kismet.device.base.first_time']], 
-        "last_seen": [device['kismet.device.base.last_time']]
-
-    }
-    
-    wlan_df = pd.concat([wlan_df, pd.DataFrame(wlan_data)], ignore_index=True)
-
-
-# print(wlan_df.shape[0])
-# #from GetFixtres import ECS_data
-# ECS_data = pd.read_csv("/home/jasher4994/mysite/ECS_data.csv")
-# #from GetFixtures2 import GK_roi
-# GK_roi = pd.read_csv("/home/jasher4994/mysite/GK_roi.csv")
+from wlan_script import wlan_devicetype_dist, get_wlan_df, wlan_devicename_dist, wlan_manuf_dist, time_data_graph, time_pck_scatter, pck_hist
 
 
 app = Flask(__name__)
 
 #Pandas Page -- Currently displays WLAN data
 @app.route('/')
-@app.route('/pandas', methods=("POST", "GET"))
+@app.route('/wlan_table_data', methods=("POST", "GET"))
 def GK():
-    return render_template('pandas.html',
-                           PageTitle = "Pandas",
-                           table=[wlan_df.head().to_html(classes='data')], titles= wlan_df.columns.values)
+    return render_template('wlan_table_data.html',
+                           PageTitle = "WLAN Table",
+                           table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)
 
 
 #Matplotlib page
-@app.route('/matplot', methods=("POST", "GET"))
+@app.route('/wlan_visuals', methods=("POST", "GET"))
 def mpl():
-    return render_template('matplot.html',
-                           PageTitle = "Matplotlib")
+    return render_template('wlan_visuals.html',
+                           PageTitle = "WLAN Visuals")
 
 @app.route('/net-graph', methods=("POST", "GET"))
 def ng():
@@ -75,48 +47,55 @@ def ng():
                            PageTitle = "Network Graph")
 
 
-@app.route('/plot.png')
-def plot_png():
-    fig = create_figure()
+#------------------------------------------------------------------------------------------------------------------
 
-    # figfile = BytesIO()
-    # fig.savefig(figfile, format='png')
-    # fig.clf() # this will clear the image
-    # figfile.seek(0)
-    # figdata_png = base64.b64encode(figfile.getvalue())
-    # return figdata_png.decode('UTF-8')
+# WLAN CHARTS (still have to figure out if there is a way to get these all into another file)
 
-    # img_bytes = BytesIO()
-    # fig.savefig(img_bytes)
-    # img_bytes.seek(0)
-    # return send_file(img_bytes, mimetype='image/png')
-
-    # tmpfile = BytesIO()
-    # fig.figure.savefig(tmpfile, format='png')
-    # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
-    # return encoded
-
+@app.route('/wlan_devicetype_dist.png')
+def plot_wlan_devicetype_dist():
+    fig = wlan_devicetype_dist()
     output = io.BytesIO()
     FigureCanvas(fig.figure).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-def create_figure():
-    fig, ax = plt.subplots(figsize = (6,4))
-    fig.patch.set_facecolor('#E8E5DA')
-    # x = ECS_data.team
-    # y = ECS_data.gw1
-    # ax.bar(x, y, color = "#304C89")
-    # plt.xticks(rotation = 30, size = 5)
+@app.route('/wlan_devicename_dist.png')
+def plot_wlan_devicename_dist():
+    fig = wlan_devicename_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
-    print(wlan_df['device_type'].value_counts())
-    fig = wlan_df['device_type'].value_counts(dropna=True).plot(kind='bar', rot=0)
-    # plt.show()
-    plt.ylabel("Frequency Dist of Device Types", size = 10)
+@app.route('/wlan_manuf_dist.png')
+def plot_wlan_manuf_dist():
+    fig = wlan_manuf_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
-    fig = wlan_df['device_type'].value_counts(dropna=True).plot(kind='bar', rot=0)
+@app.route('/time_data_graph.png')
+def plot_time_data_graph():
+    fig = time_data_graph()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
+@app.route('/time_pck_scatter.png')
+def plot_time_pck_scatter():
+    fig = time_pck_scatter()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
-    return fig
+@app.route('/pck_hist.png')
+def plot_pck_hist():
+    fig = pck_hist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+#END WLAN CHARTS
+
+#------------------------------------------------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
