@@ -23,6 +23,7 @@ import base64
 
 from wlan_script import wlan_devicetype_dist, get_wlan_df, wlan_devicename_dist, wlan_manuf_dist, time_data_graph, time_pck_scatter, pck_hist
 from bt_script import *
+from summary_script import get_all_df, get_summary_wlan_df, get_blue_df, get_aps_df, get_dev_counts, get_manuf_counts, get_manuf_count_piechart, get_dev_type_piechart
 
 
 app = Flask(__name__)
@@ -52,6 +53,11 @@ params=bt_params()
 def bt():
     return render_template('bt_visuals.html',
                            PageTitle = "Bluetooth Visuals", params=params)
+#Summary page
+@app.route('/summary', methods=("POST", "GET"))
+def summary():
+    return render_template('summary.html', 
+                           PageTitle = "Summary Graphs")
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -102,6 +108,31 @@ def plot_pck_hist():
 
 #END WLAN CHARTS
 
+#------------------------------------------------------------------------------------------------------------------
+# SUMMARY CHARTS
+
+@app.route('/dev_counts.png')#edit this still
+def plot_dev_counts():
+    fig = get_dev_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/manuf_counts.png')#edit this still
+def plot_manuf_counts():
+    fig = get_manuf_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/manuf_count_pie.png')#edit this still
+def plot_manuf_count_piechart():
+    fig = get_manuf_count_piechart()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+# END SUMMARY CHARTS
 #------------------------------------------------------------------------------------------------------------------
 
 # BLUETOOTH CHARTS
