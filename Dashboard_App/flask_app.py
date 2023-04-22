@@ -127,6 +127,28 @@ def plot_bt_manuf_dist():
     FigureCanvas(fig_manuf.figure).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route('/bt_pck_hist.png')
+def plot_bt_pck_dist():
+    fig = bt_pck_hist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/zoomed_bt_pck_hist.png')
+def plot_zoomed_bt_pck_dist():
+    fig = bt_zoomed_pck_hist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/pck_vs_time.png')
+def plot_pck_vs_time():
+    fig = pck_vs_time()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
 
 #END BLUETOOTH CHARTS
 

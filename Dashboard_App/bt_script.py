@@ -57,11 +57,12 @@ bt_time_data['time_between (hours)'] = hours
 
 #FUNCTIONS:
 def bt_params():
-    params={"test": 1}
-    #params['namedesc'] = bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum()
-    #params['name_nondesc'] = bt_df[bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum()
-    pjson = json.dumps(params)
-    return pjson
+    params={}
+    params['namedesc'] = int(bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
+    params['name_nondesc'] = int(bt_df[bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
+    params['manuf_unknown'] = int(bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_known'] = int(bt_df[bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    return params
 
 #Device Type Bar Chart
 def bt_devicetype_dist():
@@ -99,49 +100,31 @@ def bt_manuf_dist():
 
     return fig_m
 
-'''
-
-#Device Manufacturer Pie Chart
-def wlan_manuf_dist():
-    fig, ax = plt.subplots(figsize = (6,4))
-    fig.patch.set_facecolor('#E8E5DA')
-
-    fig = wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
-    fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
-
-    plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
-
-    return fig
-
-#Graph of time_between (last_seen - first_seen) for each device
-def time_data_graph():
-    fig, ax = plt.subplots(figsize = (6,4))
-    fig.patch.set_facecolor('#E8E5DA')
-
-    fig = time_data.reset_index().plot(x="index",  y=["time_between (hours)"], xticks=[], kind="bar", rot=0)
-    plt.ylabel("Graph of time between for each device", size = 10)
-
-    return fig
-
-#Scatter plot of time : num-packets
-def time_pck_scatter():
-    fig, ax = plt.subplots(figsize = (6,4))
-    fig.patch.set_facecolor('#E8E5DA')
-
-    fig = time_data.plot.scatter('time_between (hours)', 'num_packets')
-    plt.ylabel("Scatter Plot of time between vs # packets", size = 10)
-
-    return fig
-
 #Histogram of packet data
-def pck_hist():
-    fig, ax = plt.subplots(figsize = (6,4))
+def bt_pck_hist():
+    fig, ax = plt.subplots(figsize = (7,4))
     fig.patch.set_facecolor('#E8E5DA')
 
-    fig = wlan_df['num_packets'].hist(bins=20)
-    plt.ylabel("Histogram of Packet Data", size = 10)
+    fig = bt_df['num_packets'].hist(bins=20)
+    fig.set_title('Histogram of Packets')
 
     return fig
 
+#Zoomed histogram of packet data
+def bt_zoomed_pck_hist():
+    fig, ax = plt.subplots(figsize = (7,4))
+    fig.patch.set_facecolor('#E8E5DA')
 
-'''
+    fig = bt_df[bt_df['num_packets']<200]['num_packets'].hist(bins=20)
+    fig.set_title('Zoomed Histogram of Packets')
+
+    return fig
+
+#Graph of num_packets vs time between
+def pck_vs_time():
+    fig, ax = plt.subplots(figsize = (6,4))
+    fig.patch.set_facecolor('#E8E5DA')
+
+    bt_time_data.plot.scatter('time_between (hours)', 'num_packets')
+
+    return fig
