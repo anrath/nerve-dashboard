@@ -22,6 +22,7 @@ from io import BytesIO
 import base64
 
 from wlan_script import wlan_devicetype_dist, get_wlan_df, wlan_devicename_dist, wlan_manuf_dist, time_data_graph, time_pck_scatter, pck_hist
+from bt_script import *
 from summary_script import get_all_df, get_summary_wlan_df, get_blue_df, get_aps_df, get_dev_counts, get_manuf_counts, get_manuf_count_piechart, get_dev_type_piechart
 
 
@@ -47,6 +48,11 @@ def ng():
     return render_template('net-graph.html',
                            PageTitle = "Network Graph")
 
+params=bt_params()
+@app.route('/bt_visuals', methods=("POST", "GET"))
+def bt():
+    return render_template('bt_visuals.html',
+                           PageTitle = "Bluetooth Visuals", params=params)
 #Summary page
 @app.route('/summary', methods=("POST", "GET"))
 def summary():
@@ -127,6 +133,56 @@ def plot_manuf_count_piechart():
     return Response(output.getvalue(), mimetype='image/png')
 
 # END SUMMARY CHARTS
+#------------------------------------------------------------------------------------------------------------------
+
+# BLUETOOTH CHARTS
+
+@app.route('/bt_devicetype_dist.png')
+def plot_bt_devicetype_dist():
+    fig = bt_devicetype_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/bt_devicename_dist.png')
+def plot_bt_devicename_dist():
+    fig_name = bt_devicename_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig_name.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/bt_manuf_dist.png')
+def plot_bt_manuf_dist():
+    fig_manuf = bt_manuf_dist()
+    output = io.BytesIO()
+    FigureCanvas(fig_manuf.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/bt_pck_hist.png')
+def plot_bt_pck_dist():
+    fig = bt_pck_hist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/zoomed_bt_pck_hist.png')
+def plot_zoomed_bt_pck_dist():
+    fig = bt_zoomed_pck_hist()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/pck_vs_time.png')
+def plot_pck_vs_time():
+    fig = pck_vs_time()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+
+#END BLUETOOTH CHARTS
+
 #------------------------------------------------------------------------------------------------------------------
 
 
