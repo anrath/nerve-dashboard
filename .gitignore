@@ -1,7 +1,7 @@
 # data files
 */data/*/
 /kasra/example
-/api1/
+/api*/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
