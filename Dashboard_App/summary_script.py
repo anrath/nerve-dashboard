@@ -160,9 +160,19 @@ def get_dev_counts():
 
 # get manufacturer counts graph
 def get_manuf_counts():
-    fig, ax = plt.subplots(figsize = (6,4))
+    dev_manuf = all_df['manuf'].value_counts().index.tolist()
+    dev_manuf_counts = all_df['manuf'].value_counts().tolist()
+    if(dev_manuf[0] == "Unknown"):
+        dev_manuf.pop(0)
+        dev_manuf_counts.pop(0)
+    x = np.char.array(dev_manuf)
+    y = np.array(dev_manuf_counts)
+    fig, ax = plt.subplots(figsize = (6,7))
+    plt.xticks(rotation=90)
+    fig.set_tight_layout(True)
     fig.patch.set_facecolor('#E8E5DA')
-    fig = all_df['manuf'].value_counts().plot(kind='bar', ylabel="Number of Devices", xlabel="Manufacturer")
+    plt.bar(x, y, figure=fig)
+    # fig = all_df['manuf'].value_counts().plot(kind='bar', ylabel="Number of Devices", xlabel="Manufacturer")
     return fig
 
 # get manufacturer count percentage pie chart
@@ -175,7 +185,7 @@ def get_manuf_count_piechart():
     # percents = 100.*y/y.sum()
     # fig, ax = plt.subplots(figsize = (6,4))
     # fig.patch.set_facecolor('#E8E5DA')
-    # fig, texts = plt.pie(y)
+    # plt.pie(y, figure=fig)
     # labels = ['{0} - {1:1.2f} %'.format(i,j) for i,j in zip(x, percents)]
 
     # sort_legend = True
@@ -190,36 +200,48 @@ def get_manuf_count_piechart():
     # #plt.savefig('piechart.png', bbox_inches='tight')
     # #fig = 'piechart.png'
     # return fig
-    fig, ax = plt.subplots(figsize = (6,4))
+    fig, ax = plt.subplots(figsize = (8,7))
+    fig.set_tight_layout(True)
     fig.patch.set_facecolor('#E8E5DA')
-
-    fig = all_df[~all_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
-    fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
-
-    plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
+    
+    fig = all_df[~all_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None, ylabel="Frequency Distribution of Device Manufacturer") #autopct="%1.0f%%"
+    
+    fig.legend(loc='upper right', bbox_to_anchor=(-0.1, 1.),
+            fontsize=8, title='Device Manufacturers')
+    #plt.ylabel("Frequency Distribution of Device Manufacturer", size = 10)
 
     return fig
 
 # get device type percentage pie chart
 def get_dev_type_piechart():
-    dev_types = all_df['device_type'].value_counts().index.tolist()
-    dev_type_counts = all_df['device_type'].value_counts().tolist()
+    # dev_types = all_df['device_type'].value_counts().index.tolist()
+    # dev_type_counts = all_df['device_type'].value_counts().tolist()
 
-    x = np.char.array(dev_types)
-    y = np.array(dev_type_counts)
-    percents = 100.*y/y.sum()
-    patches, texts = plt.pie(y)
-    labels = ['{0} - {1:1.2f} %'.format(i,j) for i,j in zip(x, percents)]
+    # x = np.char.array(dev_types)
+    # y = np.array(dev_type_counts)
+    # percents = 100.*y/y.sum()
+    # patches, texts = plt.pie(y)
+    # labels = ['{0} - {1:1.2f} %'.format(i,j) for i,j in zip(x, percents)]
 
-    sort_legend = True
-    if sort_legend:
-        patches, labels, dummy =  zip(*sorted(zip(patches, labels, y),
-                                            key=lambda x: x[2],
-                                            reverse=True))
+    # sort_legend = True
+    # if sort_legend:
+    #     patches, labels, dummy =  zip(*sorted(zip(patches, labels, y),
+    #                                         key=lambda x: x[2],
+    #                                         reverse=True))
 
-    plt.legend(patches, labels, loc='upper right', bbox_to_anchor=(-0.1, 1.),
+    # plt.legend(patches, labels, loc='upper right', bbox_to_anchor=(-0.1, 1.),
+    #         fontsize=8, title='Device Types')
+
+    # plt.savefig('type_piechart.png', bbox_inches='tight')
+    # fig = 'type_piechart.png'
+    # return fig
+    fig, ax = plt.subplots(figsize = (7,6))
+    fig.patch.set_facecolor('#E8E5DA')
+
+    fig = all_df[~all_df["device_type"].str.contains('Unknown', na=False)]['device_type'].value_counts().plot(kind='pie', legend=True, title="Device Types", labeldistance=None) #autopct="%1.0f%%"
+    fig.legend(loc='upper right', bbox_to_anchor=(1.2, 1.),
             fontsize=8, title='Device Types')
 
-    plt.savefig('type_piechart.png', bbox_inches='tight')
-    fig = 'type_piechart.png'
+    plt.ylabel("Frequency Distribution of Device Type", size = 10)
+
     return fig
