@@ -23,7 +23,8 @@ import base64
 
 from wlan_script import wlan_devicetype_dist, get_wlan_df, wlan_devicename_dist, wlan_manuf_dist, time_data_graph, time_pck_scatter, pck_hist
 from bt_script import *
-from summary_script import get_all_df, get_summary_wlan_df, get_blue_df, get_aps_df, get_dev_counts, get_manuf_counts, get_manuf_count_piechart, get_dev_type_piechart
+from summary_script import *
+from comparison_summary_script import *
 
 
 app = Flask(__name__)
@@ -58,6 +59,12 @@ def bt():
 def summary():
     return render_template('summary.html', 
                            PageTitle = "Summary Graphs")
+
+# Comparison Summary page
+@app.route('/comparison_summary', methods=("POST", "GET"))
+def comparison_summary():
+    return render_template('comparison_summary.html', 
+                           PageTitle = "Comparison Summary Graphs")
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -128,6 +135,73 @@ def plot_manuf_counts():
 @app.route('/manuf_count_pie.png')#edit this still
 def plot_manuf_count_piechart():
     fig = get_manuf_count_piechart()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/type_counts.png')#edit this still
+def plot_dev_type_piechart():
+    fig = get_dev_type_piechart()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+# END SUMMARY CHARTS
+#------------------------------------------------------------------------------------------------------------------
+# COMPARISON SUMMARY CHARTS
+
+@app.route('/brown_dev_counts.png')#edit this still
+def plot_brown_dev_counts():
+    fig = get_brown_dev_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/brown_manuf_counts.png')#edit this still
+def plot_brown_manuf_counts():
+    fig = get_brown_manuf_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+# @app.route('/brown_manuf_count_pie.png')#edit this still
+# def plot_brown_manuf_count_piechart():
+#     fig = get_brown_manuf_count_piechart()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/brown_type_counts.png')#edit this still
+def plot_brown_dev_type_piechart():
+    fig = get_brown_dev_type_piechart()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/flats_dev_counts.png')#edit this still
+def plot_flats_dev_counts():
+    fig = get_flats_dev_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/flats_manuf_counts.png')#edit this still
+def plot_flats_manuf_counts():
+    fig = get_flats_manuf_counts()
+    output = io.BytesIO()
+    FigureCanvas(fig.figure).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+# @app.route('/flats_manuf_count_pie.png')#edit this still
+# def plot_flats_manuf_count_piechart():
+#     fig = get_flats_manuf_count_piechart()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/flats_type_counts.png')#edit this still
+def plot_flats_dev_type_piechart():
+    fig = get_flats_dev_type_piechart()
     output = io.BytesIO()
     FigureCanvas(fig.figure).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
