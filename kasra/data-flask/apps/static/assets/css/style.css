@@ -64,6 +64,8 @@ body {
   font-weight: 400;
   background: #f4f7fa;
   position: relative;
+  /* padding-left: 65px;  */
+
 }
 
 *:focus {
