@@ -45,7 +45,8 @@ def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
-    fig = wlan_df['device_name'].value_counts(dropna=True).plot(kind='pie',legend=True, title="Device Names", labeldistance=None) #autopct="%1.0f%%"
+    fig = wlan_df['device_name'].value_counts(dropna=True).plot(kind='bar', rot=0)#(kind='pie',legend=True, title="Device Names", labeldistance=None) #autopct="%1.0f%%"
+    # fig.legend(bbox_to_anchor=(2, 3.15), loc='upper left')
     plt.ylabel("Frequency Dist of Device Names", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
@@ -57,7 +58,9 @@ def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
-    fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
+    # fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
+    fig.legend(bbox_to_anchor = (1.25, 0.6), loc='center right')
+    fig.tight_layout()
 
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
 
@@ -80,8 +83,9 @@ def time_pck_scatter(time_data, file_name="time_pck_scatter.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
-    fig = time_data.plot.scatter('time_between (hours)', 'num_packets')
+    fig = time_data.plot.scatter('time_between (hours)', 'num_packets', logx=True)
     plt.ylabel("Scatter Plot of time between vs # packets", size = 10)
+    plt.xscale("log")
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
@@ -93,7 +97,6 @@ def pck_hist(wlan_df, file_name="pck_hist.png"):
 
     fig = wlan_df['num_packets'].hist(bins=20)
     plt.ylabel("Histogram of Packet Data", size = 10)
-
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
