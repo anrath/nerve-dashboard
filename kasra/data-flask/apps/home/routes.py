@@ -35,15 +35,24 @@ def route_template(template):
             return render_template("home/" + template, segment=segment, PageTitle = "WLAN Table",
                            table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)
 
-        if template == 'bt_campus.html':
+        if 'bt' in template and 'realtime' not in template:
              # Detect the current page
             segment = get_segment(request)
-            params = bt_params()
+            params = bt_params(template[3:-5])
 
             # Serve the file (if exists) from app/templates/home/FILE.html
             return render_template("home/" + template, segment=segment, PageTitle = "Bluetooth Visuals",
                            params=params)       
-               
+
+        if 'bt' in template and 'realtime' in template:
+             # Detect the current page
+            segment = get_segment(request)
+            create_bt_graphs(template[3:-5])
+            params = bt_params(template[3:-5])
+
+            # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment, PageTitle = "Bluetooth Visuals",
+                           params=params)                   
         else:
             # Detect the current page
             segment = get_segment(request)
@@ -54,7 +63,9 @@ def route_template(template):
     except TemplateNotFound:
         return render_template('home/page-404.html'), 404
 
-    except:
+    except Exception as e:
+        print("\n\n\n\n working:")
+        print(e)
         return render_template('home/page-500.html'), 500
 
 

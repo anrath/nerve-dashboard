@@ -26,8 +26,8 @@ import requests
 #FUNCTIONS:
 
 #get WLAN df 
-def get_wlan_df():
-    return wlan_df
+def get_wlan_df(name='campus'):
+    return wlan_dict[name]
 
 #Device Type Bar Chart
 def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.png"):
@@ -165,10 +165,17 @@ def create_wlan_graphs(sub_path):
     time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.png')
     pck_hist(wlan_df, f'pck_hist_{sub_path}.png')
 
+    wlan_dict[sub_path] = wlan_df
+    wlan_time_dict[sub_path] = time_data
+    # return wlan_df, time_data
+
 #------------------------------------------------------------------------------------------------------------------
 DATA_PATH = './data'
 DATA_SUB_PATH = ['campus', 'flats']
 IMG_PATH = './apps/static/assets/images/wlan'
+
+wlan_dict = {}
+wlan_time_dict = {}
 
 for sub_path in DATA_SUB_PATH:
     create_wlan_graphs(sub_path)

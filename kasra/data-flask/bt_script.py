@@ -21,15 +21,13 @@ from io import BytesIO
 import base64
 import requests
 
-bt_df = pd.DataFrame()
-bt_time_data = pd.DataFrame()
-
 #------------------------------------------------------------------------------------------------------------------
 
 #FUNCTIONS:
 
-def bt_params():
+def bt_params(name='campus'):
     params={}
+    bt_df = bt_dict[name]
     params['name_desc'] = int(bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
     params['name_nondesc'] = int(bt_df[bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
     params['manuf_unknown'] = int(bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
@@ -150,10 +148,6 @@ def create_bt_graphs(sub_path):
 
     #Time data 
     #getting time data associated with a specific device (id'd by macaddr)
-    # bt_time_data = bt_df.copy()
-    # diff = bt_time_data['last_seen'] - bt_time_data['first_seen']
-    # hours = hours = diff / 3600
-    # bt_time_data['time_between (hours)'] = hours
 
     #Time data 
     #getting time data associated with a specific device (id'd by macaddr)
@@ -176,12 +170,18 @@ def create_bt_graphs(sub_path):
     zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.png')
     pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.png')
 
+    bt_dict[sub_path] = bt_df
+    bt_time_dict[sub_path] = bt_time_data
+    # return bt_df, bt_time_data
+
 
 #------------------------------------------------------------------------------------------------------------------
 DATA_PATH = './data'
 DATA_SUB_PATH = ['campus', 'flats']
 IMG_PATH = './apps/static/assets/images/bt'
 
+bt_dict = {}
+bt_time_dict = {}
 
 for sub_path in DATA_SUB_PATH:
     create_bt_graphs(sub_path)
