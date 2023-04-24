@@ -14,6 +14,7 @@ from apps import create_app, db
 
 from wlan_script import *
 from bt_script import *
+from summary_script import *
 from network_graph import *
 
 # WARNING: Don't run with debug turned on in production!
@@ -44,6 +45,11 @@ def wlanrefresh():
 def btrefresh():
     create_bt_graphs('realtime')
     return redirect("/bt_realtime.html")
+
+@app.route('/summaryrefresh')
+def sumrefresh():
+    create_summary_graphs('realtime')
+    return redirect("/summary_realtime.html")
 
 # @app.route('/wlan_devicetype_dist.png')
 # def plot_wlan_devicetype_dist():
