@@ -14,6 +14,7 @@ from apps import create_app, db
 
 from wlan_script import *
 from bt_script import *
+from network_graph import *
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')

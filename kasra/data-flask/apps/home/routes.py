@@ -10,6 +10,7 @@ from jinja2 import TemplateNotFound
 
 from wlan_script import *
 from bt_script import *
+from network_graph import *
 
 @blueprint.route('/index')
 @login_required
@@ -52,7 +53,14 @@ def route_template(template):
 
             # Serve the file (if exists) from app/templates/home/FILE.html
             return render_template("home/" + template, segment=segment, PageTitle = "Bluetooth Visuals",
-                           params=params)                   
+                           params=params)
+        if template == 'ssid_realtime.html':
+             # Detect the current page
+            create_ssid_graph('realtime')
+            segment = get_segment(request)
+            # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment)
+           
         else:
             # Detect the current page
             segment = get_segment(request)
