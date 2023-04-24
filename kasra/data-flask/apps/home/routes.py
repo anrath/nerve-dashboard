@@ -9,6 +9,7 @@ from flask_login import login_required
 from jinja2 import TemplateNotFound
 
 from wlan_script import *
+from bt_script import *
 
 @blueprint.route('/index')
 @login_required
@@ -32,7 +33,16 @@ def route_template(template):
 
             # Serve the file (if exists) from app/templates/home/FILE.html
             return render_template("home/" + template, segment=segment, PageTitle = "WLAN Table",
-                           table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)     
+                           table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)
+
+        if template == 'bt_campus.html':
+             # Detect the current page
+            segment = get_segment(request)
+            params = bt_params()
+
+            # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment, PageTitle = "Bluetooth Visuals",
+                           params=params)       
                
         else:
             # Detect the current page

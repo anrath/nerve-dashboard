@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ breadcrumb ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div class="page-header-title">
+                                        <h5 class="m-b-10">Bluetooth Analysis Visuals</h5>
+                                    </div>
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                                        <li class="breadcrumb-item"><a href="javascript:">Bluetooth Visuals</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ breadcrumb ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.BT_ROOT }}/bt_devicetype_dist_flats.png"  />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Device Type</h4>
+                              
+                                      <p class="card-text">Bar Chart distribution of Bluetooth device types</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.BT_ROOT }}/bt_devicename_dist_flats.png"/>
+                                    <div class="card-block">
+                                      <h4 class="card-title">Device Name</h4>
+                              
+                                      <p class="card-text">Pie Chart distribution of Bluetooth device names</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.BT_ROOT }}/bt_manuf_dist_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Manufacturers</h4>
+                              
+                                      <p class="card-text">Pie Chart distribution of Bluetooth device manufacturers</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.BT_ROOT }}/bt_pck_hist_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Packet Histogram</h4>
+                              
+                                      <p class="card-text">Histogram of the number of packets for each device</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid"  src="{{ config.BT_ROOT }}/zoomed_bt_pck_hist_flats.png"  />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Zoomed Packet Histogram</h4>
+                              
+                                      <p class="card-text">Zoomed version of histogram of the number of packets for each device, for more granularity</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.BT_ROOT }}/pck_vs_time_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Packet vs Timeframe Detected</h4>
+                              
+                                      <p class="card-text">Scatter chart of amount of packets sent vs the timeframe detected (last seen - first seen) of devices</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                            <!-- [ Main Content ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
