@@ -26,12 +26,26 @@
                         <span class="pcoded-micon"><i class="feather icon-user"></i></span>
                             <span class="pcoded-mtext">Bluetooth</span></a>
                 </li>         
-                <li data-username="WLAN Page" 
+                <!-- <li data-username="WLAN Page" 
                 class="nav-item {% if 'wlan' in segment %} active {% endif %}">
                 <a href="/wlan.html" class="nav-link">
                     <span class="pcoded-micon"><i class="feather icon-user"></i></span>
                         <span class="pcoded-mtext">WLAN</span></a>
-                </li>                
+                </li>             -->
+
+                <li class="nav-item pcoded-menu-caption">
+                    <label>WLAN</label>
+                </li>
+                <li data-username="WLAN Page"
+                    class="nav-item pcoded-hasmenu ">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span
+                            class="pcoded-mtext">Sources</span></a>
+                    <ul class="pcoded-submenu">
+                        <li class=""><a href="/wlan_campus.html" class="">Grounds</a></li>
+                        <li class=""><a href="/wlan_flats.html" class="">Flats</a></li>
+                        <li class=""><a href="/wlan_realtime.html" class="">Real Time</a></li>
+                    </ul>
+                </li>    
 
                     
 

@@ -33,47 +33,47 @@ app = create_app(app_config)
 
 # WLAN CHARTS (still have to figure out if there is a way to get these all into another file)
 
-@app.route('/wlan_devicetype_dist.png')
-def plot_wlan_devicetype_dist():
-    fig = wlan_devicetype_dist()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/wlan_devicetype_dist.png')
+# def plot_wlan_devicetype_dist():
+#     fig = wlan_devicetype_dist()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/wlan_devicename_dist.png')
-def plot_wlan_devicename_dist():
-    fig = wlan_devicename_dist()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/wlan_devicename_dist.png')
+# def plot_wlan_devicename_dist():
+#     fig = wlan_devicename_dist()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/wlan_manuf_dist.png')
-def plot_wlan_manuf_dist():
-    fig = wlan_manuf_dist()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/wlan_manuf_dist.png')
+# def plot_wlan_manuf_dist():
+#     fig = wlan_manuf_dist()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/time_data_graph.png')
-def plot_time_data_graph():
-    fig = time_data_graph()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/time_data_graph.png')
+# def plot_time_data_graph():
+#     fig = time_data_graph()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/time_pck_scatter.png')
-def plot_time_pck_scatter():
-    fig = time_pck_scatter()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/time_pck_scatter.png')
+# def plot_time_pck_scatter():
+#     fig = time_pck_scatter()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/pck_hist.png')
-def plot_pck_hist():
-    fig = pck_hist()
-    output = io.BytesIO()
-    FigureCanvas(fig.figure).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+# @app.route('/pck_hist.png')
+# def plot_pck_hist():
+#     fig = pck_hist()
+#     output = io.BytesIO()
+#     FigureCanvas(fig.figure).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
 
 #END WLAN CHARTS
 

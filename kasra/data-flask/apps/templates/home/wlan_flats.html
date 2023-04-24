@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ breadcrumb ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div class="page-header-title">
+                                        <h5 class="m-b-10">WLAN Analysis Visuals</h5>
+                                    </div>
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                                        <li class="breadcrumb-item"><a href="javascript:">WLAN Visuals</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ breadcrumb ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.WLAN_ROOT }}/wlan_devicetype_dist_flats.png"  />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Device Type</h4>
+                              
+                                      <p class="card-text">Bar Chart distribution of WLAN device types</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.WLAN_ROOT }}/wlan_devicename_dist_flats.png"/>
+                                    <div class="card-block">
+                                      <h4 class="card-title">Device Name</h4>
+                              
+                                      <p class="card-text">Pie Chart distribution of WLAN device names</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.WLAN_ROOT }}/wlan_manuf_dist_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Manufacturers</h4>
+                              
+                                      <p class="card-text">Pie Chart distribution of WLAN device manufacturers</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.WLAN_ROOT }}/time_data_graph_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">Time Data</h4>
+                              
+                                      <p class="card-text">Chart of the total time the device was online (time last seen - time first seen) for each device</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid"  src="{{ config.WLAN_ROOT }}/time_pck_scatter_flats.png"  />
+                                    <div class="card-block">
+                                      <h4 class="card-title">TimePacket</h4>
+                              
+                                      <p class="card-text">Scatter plot of total time versus the number of packets transferred for each device</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="col-md-6 col-lg-4">
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.WLAN_ROOT }}/pck_hist_flats.png" />
+                                    <div class="card-block">
+                                      <h4 class="card-title">PacketHist</h4>
+                              
+                                      <p class="card-text">Histogram of the number of packets for each device</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                            <!-- [ Main Content ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
