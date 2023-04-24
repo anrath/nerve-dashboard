@@ -19,6 +19,7 @@ from datetime import datetime
 import warnings
 from io import BytesIO
 import base64
+import requests
 
 #------------------------------------------------------------------------------------------------------------------
 
@@ -100,31 +101,60 @@ def pck_hist(file_name="pck_hist.png"):
 
 #------------------------------------------------------------------------------------------------------------------
 DATA_PATH = './data'
-DATA_SUB_PATH = ['campus', 'flats']
+DATA_SUB_PATH = ['campus', 'flats', 'realtime']
 IMG_PATH = './apps/static/assets/images/wlan'
 
 for sub_path in DATA_SUB_PATH:
     #Data imports
 
     #WLAN data
-    wlan_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-IEEE802.11.json')
-    wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
-    wlan_df.rename(columns={
-        'kismet.device.base.key': 'key', 
-        'kismet.device.base.name': 'device_name', 
-        'kismet.device.base.type': 'device_type', 
-        'kismet.device.base.packets.total': 'num_packets', 
-        'kismet.device.base.manuf': 'manuf', 
-        'kismet.device.base.macaddr': 'macaddr', 
-        'kismet.device.base.channel': 'channel', 
-        'kismet.device.base.first_time': 'first_seen', 
-        'kismet.device.base.last_time': 'last_seen'
-        }, inplace=True)
+    if sub_path == 'realtime':
+        user_password = "http://sniffer:sniffer@"
+        server_ip = "172.26.99.45:2501/"
+
+        # Retrieved from: 
+        # endpoint = "/devices/views/all_views.json"
+        IEEE802_11_VIEWID = "phy-IEEE802.11"
+
+        endpoint = f"/devices/views/{IEEE802_11_VIEWID}/devices.json"
+        x = requests.get(user_password + server_ip + endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
+        wlan = x.json()
+        wlan_df = pd.DataFrame(wlan)
+        wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
+        wlan_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen'
+            }, inplace=True)
+
+    else:
+        wlan_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-IEEE802.11.json')
+        wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
+        wlan_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen'
+            }, inplace=True)
 
 
     #Time data 
     #getting time data associated with a specific device (id'd by macaddr)
     time_data = wlan_df[["macaddr",  "num_packets", "first_seen", "last_seen"]]
+    if sub_path == 'realtime':
+        time_data['first_seen'] = time_data.apply(lambda row: datetime.utcfromtimestamp(row['first_seen']), axis=1)
+        time_data['last_seen'] = time_data.apply(lambda row: datetime.utcfromtimestamp(row['last_seen']), axis=1)
     diff = time_data['last_seen'] - time_data['first_seen']
     hours = diff.apply(lambda x: x.total_seconds() / 3600)
     time_data['time_between (hours)'] = hours
@@ -134,20 +164,20 @@ for sub_path in DATA_SUB_PATH:
     time_data['last_seen'] = time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
 
 
-    if(not os.path.isfile(f'{IMG_PATH}/wlan_devicetype_dist_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicetype_dist_{sub_path}.png')):
         wlan_devicetype_dist(f'wlan_devicetype_dist_{sub_path}.png')
 
-    if(not os.path.isfile(f'{IMG_PATH}/wlan_devicename_dist_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicename_dist_{sub_path}.png')):
         wlan_devicename_dist(f'wlan_devicename_dist_{sub_path}.png')
 
-    if(not os.path.isfile(f'{IMG_PATH}/wlan_manuf_dist_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_manuf_dist_{sub_path}.png')):
         wlan_manuf_dist(f'wlan_manuf_dist_{sub_path}.png')
 
-    if(not os.path.isfile(f'{IMG_PATH}/time_data_graph_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_data_graph_{sub_path}.png')):
         time_data_graph(f'time_data_graph_{sub_path}.png')
 
-    if(not os.path.isfile(f'{IMG_PATH}/time_pck_scatter_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_pck_scatter_{sub_path}.png')):
         time_pck_scatter(f'time_pck_scatter_{sub_path}.png')
 
-    if(not os.path.isfile(f'{IMG_PATH}/pck_hist_{sub_path}.png')):
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_hist_{sub_path}.png')):
         pck_hist(f'pck_hist_{sub_path}.png')

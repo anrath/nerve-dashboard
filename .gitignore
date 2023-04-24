@@ -3,6 +3,7 @@
 /kasra/example
 /api*/
 /kasra/data-flask/data/*/*.json
+/kasra/data-flask/apps/static/assets/images/*/*realtime.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

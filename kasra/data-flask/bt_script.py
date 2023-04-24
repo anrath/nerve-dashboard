@@ -112,6 +112,7 @@ DATA_PATH = './data'
 DATA_SUB_PATH = ['campus', 'flats', 'realtime']
 IMG_PATH = './apps/static/assets/images/bt'
 
+
 for sub_path in DATA_SUB_PATH:
     #Data imports
 
@@ -123,28 +124,23 @@ for sub_path in DATA_SUB_PATH:
         # endpoint = "/devices/views/all_views.json"
         bluetooth_VIEWID = "phy-Bluetooth"
 
-        VIEWID_list = [bluetooth_VIEWID]
-
         endpoint = f"/devices/views/{bluetooth_VIEWID}/devices.json"
         x = requests.get(user_password + server_ip + endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
         bt = x.json()
-        bt_df = pd.DataFrame()
-
-        for device in bt:    
-            bt_data = {
-                "key": [device['kismet.device.base.key']], 
-                "device_name": [device['kismet.device.base.name']],
-                "device_type": [device['kismet.device.base.type']],
-                "num_packets": [device['kismet.device.base.packets.total']],
-                "manuf": [device['kismet.device.base.manuf']], 
-                "macaddr": [device['kismet.device.base.macaddr']],
-                "channel": [device['kismet.device.base.channel']],
-                "first_seen": [device['kismet.device.base.first_time']], 
-                "last_seen": [device['kismet.device.base.last_time']],
-                "server_uuid": [device['kismet.server.uuid']]
-            }
-            
-            bt_df = pd.concat([bt_df, pd.DataFrame(bt_data)], ignore_index=True)
+        bt_df = pd.DataFrame(bt)
+        bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
+        bt_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            }, inplace=True)
+        
     else:
         bt_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-Bluetooth.json')
         bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
@@ -163,26 +159,39 @@ for sub_path in DATA_SUB_PATH:
 
     #Time data 
     #getting time data associated with a specific device (id'd by macaddr)
+    # bt_time_data = bt_df.copy()
+    # diff = bt_time_data['last_seen'] - bt_time_data['first_seen']
+    # hours = hours = diff / 3600
+    # bt_time_data['time_between (hours)'] = hours
+
+    #Time data 
+    #getting time data associated with a specific device (id'd by macaddr)
     bt_time_data = bt_df.copy()
+    if sub_path == 'realtime':
+        bt_time_data['first_seen'] = bt_time_data.apply(lambda row: datetime.utcfromtimestamp(row['first_seen']), axis=1)
+        bt_time_data['last_seen'] = bt_time_data.apply(lambda row: datetime.utcfromtimestamp(row['last_seen']), axis=1)
     diff = bt_time_data['last_seen'] - bt_time_data['first_seen']
-    hours = hours = diff / 3600
+    hours = diff.apply(lambda x: x.total_seconds() / 3600)
     bt_time_data['time_between (hours)'] = hours
 
+    #converting unix timestamp to a readable string version for viewing
+    bt_time_data['first_seen'] = bt_time_data.apply(lambda row: row['first_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
+    bt_time_data['last_seen'] = bt_time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
+    
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicetype_dist_{sub_path}.png')):
+        bt_devicetype_dist(f'bt_devicetype_dist_{sub_path}.png')
 
-    #if(not os.path.isfile(f'{IMG_PATH}/bt_devicetype_dist_{sub_path}.png')):
-    bt_devicetype_dist(f'bt_devicetype_dist_{sub_path}.png')
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicename_dist_{sub_path}.png')):
+        bt_devicename_dist(f'bt_devicename_dist_{sub_path}.png')
 
-    #if(not os.path.isfile(f'{IMG_PATH}/bt_devicename_dist_{sub_path}.png')):
-    bt_devicename_dist(f'bt_devicename_dist_{sub_path}.png')
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_manuf_dist_{sub_path}.png')):
+        bt_manuf_dist(f'bt_manuf_dist_{sub_path}.png')
 
-    #if(not os.path.isfile(f'{IMG_PATH}/bt_manuf_dist_{sub_path}.png')):
-    bt_manuf_dist(f'bt_manuf_dist_{sub_path}.png')
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_pck_hist_{sub_path}.png')):
+        bt_pck_hist(f'bt_pck_hist_{sub_path}.png')
 
-    #if(not os.path.isfile(f'{IMG_PATH}/bt_pck_hist_{sub_path}.png')):
-    bt_pck_hist(f'bt_pck_hist_{sub_path}.png')
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/zoomed_bt_pck_hist_{sub_path}.png')):
+        zoomed_bt_pck_hist(f'zoomed_bt_pck_hist_{sub_path}.png')
 
-    #if(not os.path.isfile(f'{IMG_PATH}/zoomed_bt_pck_hist_{sub_path}.png')):
-    zoomed_bt_pck_hist(f'zoomed_bt_pck_hist_{sub_path}.png')
-
-    #if(not os.path.isfile(f'{IMG_PATH}/pck_vs_time_{sub_path}.png')):
-    pck_vs_time(f'pck_vs_time_{sub_path}.png')
+    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_vs_time_{sub_path}.png')):
+        pck_vs_time(f'pck_vs_time_{sub_path}.png')
