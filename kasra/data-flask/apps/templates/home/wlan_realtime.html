@@ -24,7 +24,12 @@
                                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
                                         <li class="breadcrumb-item"><a href="javascript:">WLAN Visuals</a></li>
                                     </ul>
-                                </div>
+                                    <a href="{{ url_for('wlanrefresh') }}">
+                                      <button type="button" class="btn btn-dark" title="Refresh" data-toggle="tooltip">
+                                        Refresh Realtime Data
+                                      </button>
+                                    </a> 
+                                  </div>
                             </div>
                         </div>
                     </div>

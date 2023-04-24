@@ -38,7 +38,7 @@ def bt_params():
     return params
 
 #Device Type Bar Chart
-def bt_devicetype_dist(file_name="bt_devicetype_dist.png"):
+def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -51,7 +51,7 @@ def bt_devicetype_dist(file_name="bt_devicetype_dist.png"):
     return fig
 
 #Device Name Pie Chart
-def bt_devicename_dist(file_name="bt_devicename_dist.png"):
+def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -63,7 +63,7 @@ def bt_devicename_dist(file_name="bt_devicename_dist.png"):
     return fig
 
 #Device Manufacturer Pie Chart
-def bt_manuf_dist(file_name="bt_manuf_dist.png"):
+def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -75,7 +75,7 @@ def bt_manuf_dist(file_name="bt_manuf_dist.png"):
     return fig
 
 #Histogram of packet data
-def bt_pck_hist(file_name="bt_pck_hist.png"):
+def bt_pck_hist(bt_df, file_name="bt_pck_hist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -86,7 +86,7 @@ def bt_pck_hist(file_name="bt_pck_hist.png"):
     return fig
 
 #Zoomed histogram of packet data
-def zoomed_bt_pck_hist(file_name="zoomed_bt_pck_hist.png"):
+def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -97,7 +97,7 @@ def zoomed_bt_pck_hist(file_name="zoomed_bt_pck_hist.png"):
     return fig
 
 #Graph of num_packets vs time between
-def pck_vs_time(file_name="pck_vs_time.png"):
+def pck_vs_time(bt_time_data, file_name="pck_vs_time.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -106,16 +106,7 @@ def pck_vs_time(file_name="pck_vs_time.png"):
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
 
-
-#------------------------------------------------------------------------------------------------------------------
-DATA_PATH = './data'
-DATA_SUB_PATH = ['campus', 'flats', 'realtime']
-IMG_PATH = './apps/static/assets/images/bt'
-
-
-for sub_path in DATA_SUB_PATH:
-    #Data imports
-
+def create_bt_graphs(sub_path):
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
         server_ip = "172.26.99.45:2501/"
@@ -140,7 +131,7 @@ for sub_path in DATA_SUB_PATH:
             'kismet.device.base.first_time': 'first_seen', 
             'kismet.device.base.last_time': 'last_seen',
             }, inplace=True)
-        
+    
     else:
         bt_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-Bluetooth.json')
         bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
@@ -177,21 +168,31 @@ for sub_path in DATA_SUB_PATH:
     #converting unix timestamp to a readable string version for viewing
     bt_time_data['first_seen'] = bt_time_data.apply(lambda row: row['first_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
     bt_time_data['last_seen'] = bt_time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
-    
+
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicetype_dist_{sub_path}.png')):
-        bt_devicetype_dist(f'bt_devicetype_dist_{sub_path}.png')
+        bt_devicetype_dist(bt_time_data, f'bt_devicetype_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicename_dist_{sub_path}.png')):
-        bt_devicename_dist(f'bt_devicename_dist_{sub_path}.png')
+        bt_devicename_dist(bt_df, f'bt_devicename_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_manuf_dist_{sub_path}.png')):
-        bt_manuf_dist(f'bt_manuf_dist_{sub_path}.png')
+        bt_manuf_dist(bt_df, f'bt_manuf_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_pck_hist_{sub_path}.png')):
-        bt_pck_hist(f'bt_pck_hist_{sub_path}.png')
+        bt_pck_hist(bt_df, f'bt_pck_hist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/zoomed_bt_pck_hist_{sub_path}.png')):
-        zoomed_bt_pck_hist(f'zoomed_bt_pck_hist_{sub_path}.png')
+        zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_vs_time_{sub_path}.png')):
-        pck_vs_time(f'pck_vs_time_{sub_path}.png')
+        pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.png')
+
+
+#------------------------------------------------------------------------------------------------------------------
+DATA_PATH = './data'
+DATA_SUB_PATH = ['campus', 'flats']
+IMG_PATH = './apps/static/assets/images/bt'
+
+
+for sub_path in DATA_SUB_PATH:
+    create_bt_graphs(sub_path)

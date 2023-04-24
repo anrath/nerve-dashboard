@@ -4,6 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import os
+from   flask        import redirect, Response
 from   flask_migrate import Migrate
 from   flask_minify  import Minify
 from   sys import exit
@@ -12,6 +13,7 @@ from apps.config import config_dict
 from apps import create_app, db
 
 from wlan_script import *
+from bt_script import *
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
@@ -32,6 +34,15 @@ app = create_app(app_config)
 #------------------------------------------------------------------------------------------------------------------
 
 # WLAN CHARTS (still have to figure out if there is a way to get these all into another file)
+@app.route('/wlanrefresh')
+def wlanrefresh():
+    create_wlan_graphs('realtime')
+    return redirect("/wlan_realtime.html")
+
+@app.route('/btrefresh')
+def btrefresh():
+    create_bt_graphs('realtime')
+    return redirect("/bt_realtime.html")
 
 # @app.route('/wlan_devicetype_dist.png')
 # def plot_wlan_devicetype_dist():

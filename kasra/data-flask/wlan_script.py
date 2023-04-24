@@ -30,7 +30,7 @@ def get_wlan_df():
     return wlan_df
 
 #Device Type Bar Chart
-def wlan_devicetype_dist(file_name="wlan_devicetype_dist.png"):
+def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -41,7 +41,7 @@ def wlan_devicetype_dist(file_name="wlan_devicetype_dist.png"):
     return fig
 
 #Device Name Pie Chart
-def wlan_devicename_dist(file_name="wlan_devicename_dist.png"):
+def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -52,7 +52,7 @@ def wlan_devicename_dist(file_name="wlan_devicename_dist.png"):
     return fig
 
 #Device Manufacturer Pie Chart
-def wlan_manuf_dist(file_name="wlan_manuf_dist.png"):
+def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -65,7 +65,7 @@ def wlan_manuf_dist(file_name="wlan_manuf_dist.png"):
     return fig
 
 #Graph of time_between (last_seen - first_seen) for each device
-def time_data_graph(file_name="time_data_graph.png"):
+def time_data_graph(time_data, file_name="time_data_graph.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -76,7 +76,7 @@ def time_data_graph(file_name="time_data_graph.png"):
     return fig
 
 #Scatter plot of time : num-packets
-def time_pck_scatter(file_name="time_pck_scatter.png"):
+def time_pck_scatter(time_data, file_name="time_pck_scatter.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -87,7 +87,7 @@ def time_pck_scatter(file_name="time_pck_scatter.png"):
     return fig
 
 #Histogram of packet data
-def pck_hist(file_name="pck_hist.png"):
+def pck_hist(wlan_df, file_name="pck_hist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -98,16 +98,7 @@ def pck_hist(file_name="pck_hist.png"):
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
 
-
-#------------------------------------------------------------------------------------------------------------------
-DATA_PATH = './data'
-DATA_SUB_PATH = ['campus', 'flats', 'realtime']
-IMG_PATH = './apps/static/assets/images/wlan'
-
-for sub_path in DATA_SUB_PATH:
-    #Data imports
-
-    #WLAN data
+def create_wlan_graphs(sub_path):
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
         server_ip = "172.26.99.45:2501/"
@@ -165,19 +156,27 @@ for sub_path in DATA_SUB_PATH:
 
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicetype_dist_{sub_path}.png')):
-        wlan_devicetype_dist(f'wlan_devicetype_dist_{sub_path}.png')
+        wlan_devicetype_dist(wlan_df, f'wlan_devicetype_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicename_dist_{sub_path}.png')):
-        wlan_devicename_dist(f'wlan_devicename_dist_{sub_path}.png')
+        wlan_devicename_dist(wlan_df, f'wlan_devicename_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_manuf_dist_{sub_path}.png')):
-        wlan_manuf_dist(f'wlan_manuf_dist_{sub_path}.png')
+        wlan_manuf_dist(wlan_df, f'wlan_manuf_dist_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_data_graph_{sub_path}.png')):
-        time_data_graph(f'time_data_graph_{sub_path}.png')
+        time_data_graph(time_data, f'time_data_graph_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_pck_scatter_{sub_path}.png')):
-        time_pck_scatter(f'time_pck_scatter_{sub_path}.png')
+        time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.png')
 
     if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_hist_{sub_path}.png')):
-        pck_hist(f'pck_hist_{sub_path}.png')
+        pck_hist(wlan_df, f'pck_hist_{sub_path}.png')
+
+#------------------------------------------------------------------------------------------------------------------
+DATA_PATH = './data'
+DATA_SUB_PATH = ['campus', 'flats']
+IMG_PATH = './apps/static/assets/images/wlan'
+
+for sub_path in DATA_SUB_PATH:
+    create_wlan_graphs(sub_path)
