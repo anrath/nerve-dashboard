@@ -60,7 +60,7 @@ def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
     fig = wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
     # fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
     fig.legend(bbox_to_anchor = (1.25, 0.6), loc='center right')
-    fig.tight_layout()
+    plt.tight_layout()
 
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
 
@@ -158,23 +158,12 @@ def create_wlan_graphs(sub_path):
     time_data['last_seen'] = time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
 
 
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicetype_dist_{sub_path}.png')):
-        wlan_devicetype_dist(wlan_df, f'wlan_devicetype_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_devicename_dist_{sub_path}.png')):
-        wlan_devicename_dist(wlan_df, f'wlan_devicename_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/wlan_manuf_dist_{sub_path}.png')):
-        wlan_manuf_dist(wlan_df, f'wlan_manuf_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_data_graph_{sub_path}.png')):
-        time_data_graph(time_data, f'time_data_graph_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/time_pck_scatter_{sub_path}.png')):
-        time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_hist_{sub_path}.png')):
-        pck_hist(wlan_df, f'pck_hist_{sub_path}.png')
+    wlan_devicetype_dist(wlan_df, f'wlan_devicetype_dist_{sub_path}.png')
+    wlan_devicename_dist(wlan_df, f'wlan_devicename_dist_{sub_path}.png')
+    wlan_manuf_dist(wlan_df, f'wlan_manuf_dist_{sub_path}.png')
+    time_data_graph(time_data, f'time_data_graph_{sub_path}.png')
+    time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.png')
+    pck_hist(wlan_df, f'pck_hist_{sub_path}.png')
 
 #------------------------------------------------------------------------------------------------------------------
 DATA_PATH = './data'

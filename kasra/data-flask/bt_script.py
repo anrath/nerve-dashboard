@@ -169,23 +169,12 @@ def create_bt_graphs(sub_path):
     bt_time_data['first_seen'] = bt_time_data.apply(lambda row: row['first_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
     bt_time_data['last_seen'] = bt_time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
 
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicetype_dist_{sub_path}.png')):
-        bt_devicetype_dist(bt_time_data, f'bt_devicetype_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_devicename_dist_{sub_path}.png')):
-        bt_devicename_dist(bt_df, f'bt_devicename_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_manuf_dist_{sub_path}.png')):
-        bt_manuf_dist(bt_df, f'bt_manuf_dist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/bt_pck_hist_{sub_path}.png')):
-        bt_pck_hist(bt_df, f'bt_pck_hist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/zoomed_bt_pck_hist_{sub_path}.png')):
-        zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.png')
-
-    if(sub_path=='realtime' or not os.path.isfile(f'{IMG_PATH}/pck_vs_time_{sub_path}.png')):
-        pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.png')
+    bt_devicetype_dist(bt_time_data, f'bt_devicetype_dist_{sub_path}.png')
+    bt_devicename_dist(bt_df, f'bt_devicename_dist_{sub_path}.png')
+    bt_manuf_dist(bt_df, f'bt_manuf_dist_{sub_path}.png')
+    bt_pck_hist(bt_df, f'bt_pck_hist_{sub_path}.png')
+    zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.png')
+    pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.png')
 
 
 #------------------------------------------------------------------------------------------------------------------
