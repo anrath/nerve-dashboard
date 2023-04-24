@@ -19,31 +19,14 @@ import warnings
 from io import BytesIO
 import base64
 
-import requests
 
-user_password = "http://sniffer:sniffer@"
-server_ip = "172.26.99.45:2501/"
-
-# Retrieved from: 
-# endpoint = "/devices/views/all_views.json"
-bluetooth_VIEWID = "phy-Bluetooth"
-accesspoints_VIEWID = "phydot11_accesspoints"
-IEEE802_11_VIEWID = "phy-IEEE802.11"
-all_VIEWID = "all"
-
-VIEWID_list = [bluetooth_VIEWID]
-
-for VIEWID in VIEWID_list:
-    endpoint = f"/devices/views/{VIEWID}/devices.json"
-    x = requests.get(user_password + server_ip + endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
-    json_object = x.json()
-    #json_object = json.dumps(x.json(), indent=4)
-
-bt = json_object
+#Data imports
+with open('../api/devices/phy-Bluetooth.json') as openfile:
+    bt = json.load(openfile)
 
 #------------------------------------------------------------------------------------------------------------------
 
-#WLAN data
+#Bluetooth data
 bt_df = pd.DataFrame()
 
 for device in bt:    
@@ -73,6 +56,11 @@ bt_time_data['time_between (hours)'] = hours
 #------------------------------------------------------------------------------------------------------------------
 
 #FUNCTIONS:
+
+#get BT df 
+def get_bt_df():
+    return bt_df
+
 def bt_params():
     params={}
     params['namedesc'] = int(bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())

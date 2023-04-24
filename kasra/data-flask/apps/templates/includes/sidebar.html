@@ -20,12 +20,12 @@
                     <a href="/" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span
                             class="pcoded-mtext">Dashboard</span></a>
                 </li>
-                <li data-username="Bluetooth Page" 
+                <!--<li data-username="Bluetooth Page" 
                     class="nav-item {% if 'bluetooth' in segment %} active {% endif %}">
                     <a href="/bluetooth.html" class="nav-link">
                         <span class="pcoded-micon"><i class="feather icon-user"></i></span>
                             <span class="pcoded-mtext">Bluetooth</span></a>
-                </li>         
+                </li>         -->
                 <!-- <li data-username="WLAN Page" 
                 class="nav-item {% if 'wlan' in segment %} active {% endif %}">
                 <a href="/wlan.html" class="nav-link">
@@ -45,7 +45,21 @@
                         <li class=""><a href="/wlan_flats.html" class="">Flats</a></li>
                         <li class=""><a href="/wlan_realtime.html" class="">Real Time</a></li>
                     </ul>
-                </li>    
+                </li>
+
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Bluetooth</label>
+                </li>
+                <li data-username="Bluetooth Page"
+                    class="nav-item pcoded-hasmenu ">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span
+                            class="pcoded-mtext">Sources</span></a>
+                    <ul class="pcoded-submenu">
+                        <li class=""><a href="/bt_campus.html" class="">Grounds</a></li>
+                        <li class=""><a href="/bt_flats.html" class="">Flats</a></li>
+                        <li class=""><a href="/bt_realtime.html" class="">Real Time</a></li>
+                    </ul>
+                </li>
 
                     
 
