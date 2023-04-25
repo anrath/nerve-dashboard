@@ -29,6 +29,16 @@ import requests
 def get_wlan_df(name='campus'):
     return wlan_dict[name]
 
+def wlan_params(name='campus'):
+    params={}
+    wlan_df = wlan_dict[name]
+    params['name_desc'] = int(wlan_df[~wlan_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
+    params['name_nondesc'] = int(wlan_df[wlan_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
+    params['manuf_known'] = int(wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_unknown'] = int(wlan_df[wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['num_devices'] = len(wlan_df.index)
+    return params
+
 #Device Type Bar Chart
 def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.png"):
     fig, ax = plt.subplots(figsize = (6,4))
@@ -104,7 +114,7 @@ def pck_hist(wlan_df, file_name="pck_hist.png"):
 def create_wlan_graphs(sub_path):
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
-        server_ip = "172.26.99.45:2501/"
+        server_ip = "172.25.167.71:2501/"
 
         # Retrieved from: 
         # endpoint = "/devices/views/all_views.json"

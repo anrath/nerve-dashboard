@@ -8,7 +8,7 @@ def create_ssid_graph(sub_path):
 
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
-        server_ip = "172.26.99.45:2501/"
+        server_ip = "172.25.167.71:2501/"
 
         ap_endpoint = "/devices/views/phydot11_accesspoints/devices.json"
         ap_response = requests.get(user_password + server_ip + ap_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
