@@ -75,7 +75,8 @@ def route_template(template):
             # Serve the file (if exists) from app/templates/home/FILE.html
             return render_template("home/" + template, segment=segment)
         if 'summary' in template and 'realtime' in template:
-            segment = get_segment('realtime')
+            create_summary_graphs('realtime')
+            segment = get_segment(request)
             return render_template("home/" + template, segment=segment)
            
         else:
