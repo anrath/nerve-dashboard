@@ -46,7 +46,7 @@ def btrefresh():
     create_bt_graphs('realtime')
     return redirect("/bt_realtime.html")
 
-@app.route('/summaryrefresh')
+@app.route('/sumrefresh')
 def sumrefresh():
     create_summary_graphs('realtime')
     return redirect("/summary_realtime.html")
