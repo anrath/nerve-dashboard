@@ -32,7 +32,7 @@ def bt_params(name='campus'):
     params['name_nondesc'] = int(bt_df[bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
     params['manuf_unknown'] = int(bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
     params['manuf_known'] = int(bt_df[bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
-    params['num_devices'] = len(bt_df. index)
+    params['num_devices'] = len(bt_df.index)
     return params
 
 #Device Type Bar Chart
@@ -44,6 +44,7 @@ def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.png"):
     plt.xlabel('Device Type')
     plt.ylabel('Count')
     plt.title('Device Type Distribution')
+    plt.xticks(rotation=0)
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
@@ -54,7 +55,7 @@ def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.png"):
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().plot(kind='pie', legend=True, title="Device Names", labeldistance=None, ylabel='')
-    fig.legend(bbox_to_anchor=(1, 1.02), loc='upper left')
+    fig.legend(bbox_to_anchor=(0.9, 1.02), loc='upper left', fontsize="5")
     fig.set_title('Descriptive Device Names')
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
@@ -66,7 +67,7 @@ def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.png"):
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None, ylabel='')
-    fig.legend(bbox_to_anchor=(1, 1.02), loc='upper left')
+    fig.legend(bbox_to_anchor=(0.9, 1.02), loc='upper left', fontsize="5")
     fig.set_title('Manufacturer Distribution')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
@@ -79,6 +80,8 @@ def bt_pck_hist(bt_df, file_name="bt_pck_hist.png"):
 
     fig = bt_df['num_packets'].hist(bins=20)
     fig.set_title('Histogram of Packets')
+    plt.xlabel('Number of Packets')
+    plt.ylabel('Number of Devices')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
@@ -90,6 +93,8 @@ def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.png"):
 
     fig = bt_df[bt_df['num_packets']<200]['num_packets'].hist(bins=20)
     fig.set_title('Zoomed Histogram of Packets')
+    plt.xlabel('Number of Packets')
+    plt.ylabel('Number of Devices')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
@@ -100,6 +105,9 @@ def pck_vs_time(bt_time_data, file_name="pck_vs_time.png"):
     fig.patch.set_facecolor('#E8E5DA')
 
     bt_time_data.plot.scatter('time_between (hours)', 'num_packets')
+    plt.title('Device Packet Amounts vs Time Detected')
+    plt.xlabel('Time Between Last Seen and First Seen (hours)')
+    plt.ylabel('Number of Packets')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
     return fig
