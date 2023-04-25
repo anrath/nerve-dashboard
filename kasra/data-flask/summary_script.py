@@ -55,6 +55,7 @@ def get_dev_counts(all_df, wlan_df, blue_df, aps_df, path):
     plt.bar(x, y, color='green', figure=fig)
     yvalues += 0.4
     plt.savefig(f'./apps/static/assets/images/summary/dev_count_{path}.svg')
+    plt.close()
     # return fig
 
 # get network data graph
@@ -79,6 +80,7 @@ def get_manuf_counts(all_df, path):
 
     plt.savefig(f'./apps/static/assets/images/summary/manuf_count_bar_{path}.svg')
 
+    plt.close()
     # return fig
 
 # get manufacturer count percentage pie chart
@@ -103,6 +105,7 @@ def get_manuf_count_piechart(all_df, path):
  
     plt.savefig(f'./apps/static/assets/images/summary/manuf_count_pie_{path}.svg')
 
+    plt.close()
     # return fig
 
 # get device type percentage pie chart
@@ -118,6 +121,7 @@ def get_dev_type_piechart(all_df, path):
 
     plt.savefig(f'./apps/static/assets/images/summary/dev_type_pie_{path}.svg')
 
+    plt.close()
     # return fig
 
 #------------------------------------------------------------------------------------------------------------------

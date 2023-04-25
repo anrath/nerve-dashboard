@@ -49,6 +49,7 @@ def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.svg"):
     plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Device Name Pie Chart
@@ -61,6 +62,7 @@ def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.svg"):
     plt.ylabel("Frequency Dist of Device Names", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Device Manufacturer Pie Chart
@@ -76,6 +78,7 @@ def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.svg"):
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Graph of time_between (last_seen - first_seen) for each device
@@ -87,6 +90,7 @@ def time_data_graph(time_data, file_name="time_data_graph.png"):
     plt.ylabel("Graph of time between for each device", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Scatter plot of time : num-packets
@@ -100,6 +104,7 @@ def time_pck_scatter(time_data, file_name="time_pck_scatter.svg"):
     plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Histogram of packet data
@@ -112,6 +117,7 @@ def pck_hist(wlan_df, file_name="pck_hist.svg"):
     plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 def create_wlan_graphs(sub_path):

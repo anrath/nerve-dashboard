@@ -48,6 +48,7 @@ def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.svg"):
     plt.yscale('log')
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Device Name Pie Chart
@@ -60,6 +61,7 @@ def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.svg"):
     fig.set_title('Descriptive Device Names')
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Device Manufacturer Pie Chart
@@ -72,6 +74,7 @@ def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.svg"):
     fig.set_title('Manufacturer Distribution')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Histogram of packet data
@@ -86,6 +89,7 @@ def bt_pck_hist(bt_df, file_name="bt_pck_hist.svg"):
     plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Zoomed histogram of packet data
@@ -99,6 +103,7 @@ def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.svg"):
     plt.ylabel('Number of Devices')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 #Graph of num_packets vs time between
@@ -113,6 +118,7 @@ def pck_vs_time(bt_time_data, file_name="pck_vs_time.svg"):
     plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
+    plt.close()
     # return fig
 
 def create_bt_graphs(sub_path):
