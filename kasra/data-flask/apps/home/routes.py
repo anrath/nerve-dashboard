@@ -17,7 +17,7 @@ from network_graph import *
 @login_required
 def index():
 
-    return render_template('home/index.html', segment='index')
+    return render_template('home/summary_realtime.html', segment='index')
 
 
 @blueprint.route('/<template>')
