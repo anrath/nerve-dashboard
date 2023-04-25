@@ -21,6 +21,7 @@ from datetime import datetime
 import warnings
 from io import BytesIO
 import base64
+import requests
 
 #------------------------------------------------------------------------------------------------------------------
 #FUNCTIONS: 
@@ -110,115 +111,265 @@ def get_dev_type_piechart(all_df, path):
 
 #------------------------------------------------------------------------------------------------------------------
 
-# Collecting data on all devices
+# Collecting data on all devices(
+
+# def net_exist(network):
+
 
 def create_summary_graphs(path):
 
-    with open(f'./data/{path}/all.json', 'r') as openfile:
-        all = json.load(openfile)
+    if path == 'realtime':
+        user_password = "http://sniffer:sniffer@"
+        server_ip = "172.25.167.71:2501/"
 
-    with open(f'./data/{path}/phydot11_accesspoints.json', 'r') as openfile:
-        aps = json.load(openfile)
+        # Retrieved from: 
+        # endpoint = "/devices/views/all_views.json"
+        all_VIEWID = "all"
+        aps_VIEWID = "phydot11_accesspoints"
+        bluetooth_VIEWID = "phy-Bluetooth"
+        wlan_VIEWID = "phy-IEEE802.11"
 
-    with open(f'./data/{path}/phy-Bluetooth.json', 'r') as openfile:
-        blue = json.load(openfile)
-
-    with open(f'./data/{path}/phy-IEEE802.11.json', 'r') as openfile:
-        wlan = json.load(openfile)
-
-    all_df = pd.DataFrame()
-
-    for device in all:   
-        try:
-            x = [device['dot11.device']['dot11.device.probed_ssid_map'][0]['dot11.probedssid.ssid']]
-        except KeyError:
-            x = "None"
-        all_data = {
-            "key": [device['kismet.device.base.key']], 
-            "device_name": [device['kismet.device.base.name']],
-            "device_type": [device['kismet.device.base.type']],
-            "num_packets": [device['kismet.device.base.packets.total']],
-            "manuf": [device['kismet.device.base.manuf']], 
-            "macaddr": [device['kismet.device.base.macaddr']],
-            "channel": [device['kismet.device.base.channel']],
-            "first_seen": [device['kismet.device.base.first_time']], 
-            "last_seen": [device['kismet.device.base.last_time']],
-            "server_uuid": [device['kismet.server.uuid']],
-            "network": x
-        }
+        all_endpoint = f"/devices/views/{all_VIEWID}/devices.json"
+        all_x = requests.get(user_password + server_ip + all_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
+        all = all_x.json()
+        all_df = pd.DataFrame(all)
+        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        all_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
         
-        all_df = pd.concat([all_df, pd.DataFrame(all_data)], ignore_index=True)
-
-    # Collecting data on wlan devices
-    wlan_df = pd.DataFrame()
-
-    for device in wlan:
-        try:
-            x = [device['dot11.device']['dot11.device.probed_ssid_map'][0]['dot11.probedssid.ssid']]
-        except KeyError:
-            x = "None"    
-        wlan_data = {
-            "key": [device['kismet.device.base.key']], 
-            "device_name": [device['kismet.device.base.name']],
-            "device_type": [device['kismet.device.base.type']],
-            "num_packets": [device['kismet.device.base.packets.total']],
-            "manuf": [device['kismet.device.base.manuf']], 
-            "macaddr": [device['kismet.device.base.macaddr']],
-            "channel": [device['kismet.device.base.channel']],
-            "first_seen": [device['kismet.device.base.first_time']], 
-            "last_seen": [device['kismet.device.base.last_time']],
-            "server_uuid": [device['kismet.server.uuid']],
-            "network": x
-        }
+        aps_endpoint = f"/devices/views/{aps_VIEWID}/devices.json"
+        aps_x = requests.get(user_password + server_ip + aps_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
+        aps = aps_x.json()
+        aps_df = pd.DataFrame(aps)
+        aps_df = aps_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        aps_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
         
-        wlan_df = pd.concat([wlan_df, pd.DataFrame(wlan_data)], ignore_index=True)
-
-    # Collecting data on bluetooth devices
-    blue_df = pd.DataFrame()
-
-    for device in blue:    
-        blue_data = {
-            "key": [device['kismet.device.base.key']], 
-            "device_name": [device['kismet.device.base.name']],
-            "device_type": [device['kismet.device.base.type']],
-            "num_packets": [device['kismet.device.base.packets.total']],
-            "manuf": [device['kismet.device.base.manuf']], 
-            "macaddr": [device['kismet.device.base.macaddr']],
-            "channel": [device['kismet.device.base.channel']],
-            "first_seen": [device['kismet.device.base.first_time']], 
-            "last_seen": [device['kismet.device.base.last_time']],
-            "server_uuid": [device['kismet.server.uuid']]
-        }
+        bt_endpoint = f"/devices/views/{bluetooth_VIEWID}/devices.json"
+        bt_x = requests.get(user_password + server_ip + bt_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
+        bt = bt_x.json()
+        bt_df = pd.DataFrame(bt)
+        bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        bt_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
         
-        blue_df = pd.concat([blue_df, pd.DataFrame(blue_data)], ignore_index=True)
+        wlan_endpoint = f"/devices/views/{wlan_VIEWID}/devices.json"
+        wlan_x = requests.get(user_password + server_ip + wlan_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
+        wlan = wlan_x.json()
+        wlan_df = pd.DataFrame(wlan)
+        wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        wlan_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
+    
+    
+    else:
+        all_df = pd.read_json(f'{DATA_PATH}/{path}/all.json')
+        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        all_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
 
-    # Collecting data on access points
-    aps_df = pd.DataFrame()
+        aps_df = pd.read_json(f'{DATA_PATH}/{path}/phydot11_accesspoints.json')
+        aps_df = aps_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        aps_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
 
-    for device in aps:    
-        aps_data = {
-            "key": [device['kismet.device.base.key']], 
-            "device_name": [device['kismet.device.base.name']],
-            "device_type": [device['kismet.device.base.type']],
-            "num_packets": [device['kismet.device.base.packets.total']],
-            "manuf": [device['kismet.device.base.manuf']], 
-            "macaddr": [device['kismet.device.base.macaddr']],
-            "channel": [device['kismet.device.base.channel']],
-            "first_seen": [device['kismet.device.base.first_time']], 
-            "last_seen": [device['kismet.device.base.last_time']],
-            "server_uuid": [device['kismet.server.uuid']]
-        }
+        bt_df = pd.read_json(f'{DATA_PATH}/{path}/phy-Bluetooth.json')
+        bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        bt_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
         
-        aps_df = pd.concat([aps_df, pd.DataFrame(aps_data)], ignore_index=True)
+        wlan_df = pd.read_json(f'{DATA_PATH}/{path}/phy-IEEE802.11.json')
+        wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
+        wlan_df.rename(columns={
+            'kismet.device.base.key': 'key', 
+            'kismet.device.base.name': 'device_name', 
+            'kismet.device.base.type': 'device_type', 
+            'kismet.device.base.packets.total': 'num_packets', 
+            'kismet.device.base.manuf': 'manuf', 
+            'kismet.device.base.macaddr': 'macaddr', 
+            'kismet.device.base.channel': 'channel', 
+            'kismet.device.base.first_time': 'first_seen', 
+            'kismet.device.base.last_time': 'last_seen',
+            'kismet.server.uuid': 'server_uuid',
+            }, inplace=True)
 
-    get_dev_counts(all_df, wlan_df, blue_df, aps_df, path)
+    # with open(f'./data/{path}/all.json', 'r') as openfile:
+    #     all = json.load(openfile)
+
+    # with open(f'./data/{path}/phydot11_accesspoints.json', 'r') as openfile:
+    #     aps = json.load(openfile)
+
+    # with open(f'./data/{path}/phy-Bluetooth.json', 'r') as openfile:
+    #     blue = json.load(openfile)
+
+    # with open(f'./data/{path}/phy-IEEE802.11.json', 'r') as openfile:
+    #     wlan = json.load(openfile)
+
+    # all_df = pd.DataFrame()
+
+    # for device in all:   
+    #     try:
+    #         x = [device['dot11.device']['dot11.device.probed_ssid_map'][0]['dot11.probedssid.ssid']]
+    #     except KeyError:
+    #         x = "None"
+    #     all_data = {
+    #         'kismet.device.base.key': 'key', 
+    #         'kismet.device.base.name': 'device_name', 
+    #         'kismet.device.base.type': 'device_type', 
+    #         'kismet.device.base.packets.total': 'num_packets', 
+    #         'kismet.device.base.manuf': 'manuf', 
+    #         'kismet.device.base.macaddr': 'macaddr', 
+    #         'kismet.device.base.channel': 'channel', 
+    #         'kismet.device.base.first_time': 'first_seen', 
+    #         'kismet.device.base.last_time': 'last_seen',
+    #         'kismet.server.uuid': 'server_uuid',
+    #         x :'network',
+    #     }
+        
+    #     all_df = pd.concat([all_df, pd.DataFrame(all_data)], ignore_index=True)
+
+    # # Collecting data on wlan devices
+    # wlan_df = pd.DataFrame()
+
+    # for device in wlan:
+    #     try:
+    #         x = [device['dot11.device']['dot11.device.probed_ssid_map'][0]['dot11.probedssid.ssid']]
+    #     except KeyError:
+    #         x = "None"    
+    #     wlan_data = {
+    #         "key": [device['kismet.device.base.key']], 
+    #         "device_name": [device['kismet.device.base.name']],
+    #         "device_type": [device['kismet.device.base.type']],
+    #         "num_packets": [device['kismet.device.base.packets.total']],
+    #         "manuf": [device['kismet.device.base.manuf']], 
+    #         "macaddr": [device['kismet.device.base.macaddr']],
+    #         "channel": [device['kismet.device.base.channel']],
+    #         "first_seen": [device['kismet.device.base.first_time']], 
+    #         "last_seen": [device['kismet.device.base.last_time']],
+    #         "server_uuid": [device['kismet.server.uuid']],
+    #         "network": x
+    #     }
+        
+    #     wlan_df = pd.concat([wlan_df, pd.DataFrame(wlan_data)], ignore_index=True)
+
+    # # Collecting data on bluetooth devices
+    # blue_df = pd.DataFrame()
+
+    # for device in blue:    
+    #     blue_data = {
+    #         "key": [device['kismet.device.base.key']], 
+    #         "device_name": [device['kismet.device.base.name']],
+    #         "device_type": [device['kismet.device.base.type']],
+    #         "num_packets": [device['kismet.device.base.packets.total']],
+    #         "manuf": [device['kismet.device.base.manuf']], 
+    #         "macaddr": [device['kismet.device.base.macaddr']],
+    #         "channel": [device['kismet.device.base.channel']],
+    #         "first_seen": [device['kismet.device.base.first_time']], 
+    #         "last_seen": [device['kismet.device.base.last_time']],
+    #         "server_uuid": [device['kismet.server.uuid']]
+    #     }
+        
+    #     blue_df = pd.concat([blue_df, pd.DataFrame(blue_data)], ignore_index=True)
+
+    # # Collecting data on access points
+    # aps_df = pd.DataFrame()
+
+    # for device in aps:    
+    #     aps_data = {
+    #         "key": [device['kismet.device.base.key']], 
+    #         "device_name": [device['kismet.device.base.name']],
+    #         "device_type": [device['kismet.device.base.type']],
+    #         "num_packets": [device['kismet.device.base.packets.total']],
+    #         "manuf": [device['kismet.device.base.manuf']], 
+    #         "macaddr": [device['kismet.device.base.macaddr']],
+    #         "channel": [device['kismet.device.base.channel']],
+    #         "first_seen": [device['kismet.device.base.first_time']], 
+    #         "last_seen": [device['kismet.device.base.last_time']],
+    #         "server_uuid": [device['kismet.server.uuid']]
+    #     }
+        
+    #     aps_df = pd.concat([aps_df, pd.DataFrame(aps_data)], ignore_index=True)
+
+    get_dev_counts(all_df, wlan_df, bt_df, aps_df, path)
     get_manuf_counts(all_df, path)
     get_manuf_count_piechart(all_df, path)
     get_dev_type_piechart(all_df, path)
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 # GATHERING DATA
-
+DATA_PATH = './data'
+# DATA_SUB_PATH = ['campus', 'flats']
+# IMG_PATH = './apps/static/assets/images/bt'
 # Opening JSON files / Data imports
 
 create_summary_graphs("campus")

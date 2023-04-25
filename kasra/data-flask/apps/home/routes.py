@@ -10,6 +10,7 @@ from jinja2 import TemplateNotFound
 
 from wlan_script import *
 from bt_script import *
+from summary_script import *
 from network_graph import *
 
 @blueprint.route('/index')
@@ -72,6 +73,9 @@ def route_template(template):
             create_ssid_graph('realtime')
             segment = get_segment(request)
             # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment)
+        if 'summary' in template and 'realtime' in template:
+            segment = get_segment('realtime')
             return render_template("home/" + template, segment=segment)
            
         else:
