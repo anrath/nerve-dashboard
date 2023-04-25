@@ -34,8 +34,8 @@ def wlan_params(name='campus'):
     wlan_df = wlan_dict[name]
     params['name_desc'] = int(wlan_df[~wlan_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
     params['name_nondesc'] = int(wlan_df[wlan_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
-    params['manuf_unknown'] = int(wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
-    params['manuf_known'] = int(wlan_df[wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_known'] = int(wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_unknown'] = int(wlan_df[wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
     params['num_devices'] = len(wlan_df.index)
     return params
 
@@ -56,7 +56,7 @@ def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.png"):
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = wlan_df['device_name'].value_counts(dropna=True).plot(kind='pie',legend=True, title="Device Names", labeldistance=None) #autopct="%1.0f%%"
-    fig.legend(bbox_to_anchor=(0.9, 0.5), loc='upper left')
+    fig.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', fontsize="5")
     plt.ylabel("Frequency Dist of Device Names", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
@@ -69,7 +69,7 @@ def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
 
     fig = wlan_df[~wlan_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
     # fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
-    fig.legend(bbox_to_anchor = (1.0, 0.4), loc='upper left')
+    fig.legend(bbox_to_anchor = (1.0, 1.0), loc='upper left', fontsize="5")
     # plt.tight_layout()
 
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
@@ -114,7 +114,7 @@ def pck_hist(wlan_df, file_name="pck_hist.png"):
 def create_wlan_graphs(sub_path):
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
-        server_ip = "172.26.99.45:2501/"
+        server_ip = "172.25.167.71:2501/"
 
         # Retrieved from: 
         # endpoint = "/devices/views/all_views.json"

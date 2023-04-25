@@ -28,21 +28,25 @@ def route_template(template):
         if not template.endswith('.html'):
             template += '.html'
 
-        if 'wlan' in template and 'realtime' not in template: #template == 'wlan.html':
-             # Detect the current page
-            segment = get_segment(request)
-            # Serve the file (if exists) from app/templates/home/FILE.html
-            return render_template("home/" + template, segment=segment, PageTitle = "WLAN Table",
-                           table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)
-        
-        if 'wlan' in template and 'realtime' in template: #template == 'wlan.html':
-             # Detect the current page
-            segment = get_segment(request)
-            create_wlan_graphs(template[3:-5])
-            # Serve the file (if exists) from app/templates/home/FILE.html
-            return render_template("home/" + template, segment=segment, PageTitle = "WLAN Table",
-                           table=[get_wlan_df().head().to_html(classes='data')], titles= get_wlan_df().columns.values)
 
+        if 'wlan' in template and 'realtime' not in template:
+             # Detect the current page
+            segment = get_segment(request)
+            params = wlan_params(template[5:-5])
+
+            # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment, PageTitle = "WLAN Visuals",
+                           params=params) 
+
+        if 'wlan' in template and 'realtime' in template:
+             # Detect the current page
+            segment = get_segment(request)
+            create_wlan_graphs(template[5:-5])
+            params = wlan_params(template[5:-5])
+
+            # Serve the file (if exists) from app/templates/home/FILE.html
+            return render_template("home/" + template, segment=segment, PageTitle = "WLAN Visuals",
+                           params=params)
 
         if 'bt' in template and 'realtime' not in template:
              # Detect the current page
@@ -62,6 +66,7 @@ def route_template(template):
             # Serve the file (if exists) from app/templates/home/FILE.html
             return render_template("home/" + template, segment=segment, PageTitle = "Bluetooth Visuals",
                            params=params)
+
         if template == 'ssid_realtime.html':
              # Detect the current page
             create_ssid_graph('realtime')
