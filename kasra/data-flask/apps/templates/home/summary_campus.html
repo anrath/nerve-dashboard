@@ -5,10 +5,6 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
-<!-- <script>
-  const params = JSON.parse('{{ params | tojson | safe}}');
-</script> -->
-
 {% block content %}
 
     <!-- [ Main Content ] start -->
@@ -36,89 +32,9 @@
                     <div class="main-body">
                         <div class="page-wrapper">
                             <!-- [ Main Content ] start -->
-                            <!-- <div class="row">
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-block border-bottom">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                              <i class="feather icon-airplay f-30 text-c-green"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">{{params.num_devices}}</h3>
-                                              <span class="d-block text-uppercase">TOTAL DEVICES</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="card-block">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                              <i class="feather icon-map-pin f-30 text-c-blue"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">Brown College</h3>
-                                              <span class="d-block text-uppercase">LOCATION</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-block border-bottom">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                              <i class="feather icon-codepen f-30 text-c-green"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">{{params.name_desc}}</h3>
-                                              <span class="d-block text-uppercase">Descriptive Device Names</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="card-block">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                            <i class="feather icon-zap f-30 text-c-green"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">{{params.name_nondesc}}</h3>
-                                              <span class="d-block text-uppercase">MAC Address Device Names</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-block border-bottom">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                              <i class="feather icon-briefcase f-30 text-c-green"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">{{params.manuf_known}}</h3>
-                                              <span class="d-block text-uppercase">Devices with Known Manufacturers</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="card-block">
-                                      <div class="row d-flex align-items-center">
-                                          <div class="col-auto">
-                                            <i class="feather icon-eye-off f-30 text-c-green"></i>
-                                          </div>
-                                          <div class="col">
-                                              <h3 class="f-w-300">{{params.manuf_unknown}}</h3>
-                                              <span class="d-block text-uppercase">Devices with Unknown Manufacturers</span>
-                                          </div>
-                                      </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div> -->
                             <div class="row">
                                 <div class="col-md-6 col-lg-4">
-                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="../../static/assets/images/summary/dev_count_campus.png"  />
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.SUMMARY_ROOT }}/dev_count_campus.png"  />
                                     <div class="card-block">
                                       <h4 class="card-title">Devices</h4>
                               
@@ -128,7 +44,7 @@
                                 </div>
                                 <br>
                                 <div class="col-md-6 col-lg-4">
-                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="../../static/assets/images/summary/manuf_count_bar_campus.png"/>
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.SUMMARY_ROOT }}/manuf_count_bar_campus.png"/>
                                     <div class="card-block">
                                       <h4 class="card-title">Device Manufacturers</h4>
                               
@@ -138,7 +54,7 @@
                                 </div>
                                 <br>
                                 <div class="col-md-6 col-lg-4">
-                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="../../static/assets/images/summary/manuf_count_pie_campus.png" />
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.SUMMARY_ROOT }}/manuf_count_pie_campus.png" />
                                     <div class="card-block">
                                       <h4 class="card-title">Device Manufacturers</h4>
                               
@@ -148,7 +64,7 @@
                                 </div>
                                 <br>
                                 <div class="col-md-6 col-lg-4">
-                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="../../static/assets/images/summary/dev_type_pie_campus.png" />
+                                  <div class="card"><img alt="Card image cap" class="card-img-top img-fluid" src="{{ config.SUMMARY_ROOT }}/dev_type_pie_campus.png" />
                                     <div class="card-block">
                                       <h4 class="card-title">Device Types</h4>
                               

@@ -12,6 +12,7 @@ class Config(object):
     # Assets Management
     ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')  
     WLAN_ROOT = '/static/assets/images/wlan'
+    SUMMARY_ROOT = '/static/assets/images/summary'
     BT_ROOT = '/static/assets/images/bt'
     
     # Set up the App SECRET_KEY
