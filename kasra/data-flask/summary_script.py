@@ -81,14 +81,23 @@ def get_manuf_counts(all_df, path):
 
 # get manufacturer count percentage pie chart
 def get_manuf_count_piechart(all_df, path):
-    fig, ax = plt.subplots(figsize = (8,7))
-    fig.set_tight_layout(True)
+    # fig, ax = plt.subplots(figsize = (8,7))
+    # fig.set_tight_layout(True)
+    # fig.patch.set_facecolor('#E8E5DA')
+    
+    # fig = all_df[~all_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None, ylabel="Frequency Distribution of Device Manufacturer") #autopct="%1.0f%%"
+    
+    # fig.legend(loc='upper right', bbox_to_anchor=(-0.1, 1.),
+    #         fontsize=8, title='Device Manufacturers')
+    fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
-    
-    fig = all_df[~all_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None, ylabel="Frequency Distribution of Device Manufacturer") #autopct="%1.0f%%"
-    
-    fig.legend(loc='upper right', bbox_to_anchor=(-0.1, 1.),
-            fontsize=8, title='Device Manufacturers')
+
+    fig = all_df[~all_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().plot(kind='pie', legend=True, title="Device Manufacturers", labeldistance=None) #autopct="%1.0f%%"
+    # fig.legend(bbox_to_anchor=(1, 2.15), loc='upper left')
+    fig.legend(bbox_to_anchor = (1.0, 1.0), loc='upper left', fontsize="5")
+    # plt.tight_layout()
+
+    plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
  
     plt.savefig(f'./apps/static/assets/images/summary/manuf_count_pie_{path}.png')
 
