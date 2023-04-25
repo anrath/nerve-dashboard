@@ -30,8 +30,8 @@ def bt_params(name='campus'):
     bt_df = bt_dict[name]
     params['name_desc'] = int(bt_df[~bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
     params['name_nondesc'] = int(bt_df[bt_df["device_name"].str.contains(':', na=False)]['device_name'].value_counts().sum())
-    params['manuf_unknown'] = int(bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
-    params['manuf_known'] = int(bt_df[bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_known'] = int(bt_df[~bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
+    params['manuf_unknown'] = int(bt_df[bt_df["manuf"].str.contains('Unknown', na=False)]['manuf'].value_counts().sum())
     params['num_devices'] = len(bt_df.index)
     return params
 
