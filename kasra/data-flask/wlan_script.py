@@ -40,18 +40,19 @@ def wlan_params(name='campus'):
     return params
 
 #Device Type Bar Chart
-def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.png"):
+def wlan_devicetype_dist(wlan_df, file_name="wlan_devicetype_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = wlan_df['device_type'].value_counts(dropna=True).plot(kind='bar', rot=0)
     plt.ylabel("Frequency Dist of Device Types", size = 10)
+    plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Device Name Pie Chart
-def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.png"):
+def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -60,10 +61,10 @@ def wlan_devicename_dist(wlan_df, file_name="wlan_devicename_dist.png"):
     plt.ylabel("Frequency Dist of Device Names", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Device Manufacturer Pie Chart
-def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
+def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -75,7 +76,7 @@ def wlan_manuf_dist(wlan_df, file_name="wlan_manuf_dist.png"):
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Graph of time_between (last_seen - first_seen) for each device
 def time_data_graph(time_data, file_name="time_data_graph.png"):
@@ -86,30 +87,32 @@ def time_data_graph(time_data, file_name="time_data_graph.png"):
     plt.ylabel("Graph of time between for each device", size = 10)
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Scatter plot of time : num-packets
-def time_pck_scatter(time_data, file_name="time_pck_scatter.png"):
+def time_pck_scatter(time_data, file_name="time_pck_scatter.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = time_data.plot.scatter('time_between (hours)', 'num_packets', logx=True)
     plt.ylabel("Scatter Plot of time between vs # packets", size = 10)
     plt.xscale("log")
+    plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Histogram of packet data
-def pck_hist(wlan_df, file_name="pck_hist.png"):
+def pck_hist(wlan_df, file_name="pck_hist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
     fig = wlan_df['num_packets'].hist(bins=20)
     plt.ylabel("Histogram of Packet Data", size = 10)
+    plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 def create_wlan_graphs(sub_path):
     if sub_path == 'realtime':
@@ -168,12 +171,12 @@ def create_wlan_graphs(sub_path):
     time_data['last_seen'] = time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
 
 
-    wlan_devicetype_dist(wlan_df, f'wlan_devicetype_dist_{sub_path}.png')
-    wlan_devicename_dist(wlan_df, f'wlan_devicename_dist_{sub_path}.png')
-    wlan_manuf_dist(wlan_df, f'wlan_manuf_dist_{sub_path}.png')
+    wlan_devicetype_dist(wlan_df, f'wlan_devicetype_dist_{sub_path}.svg')
+    wlan_devicename_dist(wlan_df, f'wlan_devicename_dist_{sub_path}.svg')
+    wlan_manuf_dist(wlan_df, f'wlan_manuf_dist_{sub_path}.svg')
     time_data_graph(time_data, f'time_data_graph_{sub_path}.png')
-    time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.png')
-    pck_hist(wlan_df, f'pck_hist_{sub_path}.png')
+    time_pck_scatter(time_data, f'time_pck_scatter_{sub_path}.svg')
+    pck_hist(wlan_df, f'pck_hist_{sub_path}.svg')
 
     wlan_dict[sub_path] = wlan_df
     wlan_time_dict[sub_path] = time_data

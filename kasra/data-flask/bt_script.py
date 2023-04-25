@@ -36,7 +36,7 @@ def bt_params(name='campus'):
     return params
 
 #Device Type Bar Chart
-def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.png"):
+def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -45,12 +45,13 @@ def bt_devicetype_dist(bt_time_data, file_name="bt_devicetype_dist.png"):
     plt.ylabel('Count')
     plt.title('Device Type Distribution')
     plt.xticks(rotation=0)
+    plt.yscale('log')
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Device Name Pie Chart
-def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.png"):
+def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -59,10 +60,10 @@ def bt_devicename_dist(bt_df, file_name="bt_devicename_dist.png"):
     fig.set_title('Descriptive Device Names')
     
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Device Manufacturer Pie Chart
-def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.png"):
+def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -71,10 +72,10 @@ def bt_manuf_dist(bt_df, file_name="bt_manuf_dist.png"):
     fig.set_title('Manufacturer Distribution')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Histogram of packet data
-def bt_pck_hist(bt_df, file_name="bt_pck_hist.png"):
+def bt_pck_hist(bt_df, file_name="bt_pck_hist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -82,12 +83,13 @@ def bt_pck_hist(bt_df, file_name="bt_pck_hist.png"):
     fig.set_title('Histogram of Packets')
     plt.xlabel('Number of Packets')
     plt.ylabel('Number of Devices')
+    plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Zoomed histogram of packet data
-def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.png"):
+def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -97,10 +99,10 @@ def zoomed_bt_pck_hist(bt_df, file_name="zoomed_bt_pck_hist.png"):
     plt.ylabel('Number of Devices')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 #Graph of num_packets vs time between
-def pck_vs_time(bt_time_data, file_name="pck_vs_time.png"):
+def pck_vs_time(bt_time_data, file_name="pck_vs_time.svg"):
     fig, ax = plt.subplots(figsize = (6,4))
     fig.patch.set_facecolor('#E8E5DA')
 
@@ -108,9 +110,10 @@ def pck_vs_time(bt_time_data, file_name="pck_vs_time.png"):
     plt.title('Device Packet Amounts vs Time Detected')
     plt.xlabel('Time Between Last Seen and First Seen (hours)')
     plt.ylabel('Number of Packets')
+    plt.yscale('log')
 
     plt.savefig(f'{IMG_PATH}/{file_name}')
-    return fig
+    # return fig
 
 def create_bt_graphs(sub_path):
     if sub_path == 'realtime':
@@ -171,12 +174,12 @@ def create_bt_graphs(sub_path):
     bt_time_data['first_seen'] = bt_time_data.apply(lambda row: row['first_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
     bt_time_data['last_seen'] = bt_time_data.apply(lambda row: row['last_seen'].strftime('%Y-%m-%d %H:%M:%S'), axis=1)
 
-    bt_devicetype_dist(bt_time_data, f'bt_devicetype_dist_{sub_path}.png')
-    bt_devicename_dist(bt_df, f'bt_devicename_dist_{sub_path}.png')
-    bt_manuf_dist(bt_df, f'bt_manuf_dist_{sub_path}.png')
-    bt_pck_hist(bt_df, f'bt_pck_hist_{sub_path}.png')
-    zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.png')
-    pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.png')
+    bt_devicetype_dist(bt_time_data, f'bt_devicetype_dist_{sub_path}.svg')
+    bt_devicename_dist(bt_df, f'bt_devicename_dist_{sub_path}.svg')
+    bt_manuf_dist(bt_df, f'bt_manuf_dist_{sub_path}.svg')
+    bt_pck_hist(bt_df, f'bt_pck_hist_{sub_path}.svg')
+    zoomed_bt_pck_hist(bt_df, f'zoomed_bt_pck_hist_{sub_path}.svg')
+    pck_vs_time(bt_time_data, f'pck_vs_time_{sub_path}.svg')
 
     bt_dict[sub_path] = bt_df
     bt_time_dict[sub_path] = bt_time_data

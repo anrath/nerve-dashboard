@@ -54,8 +54,8 @@ def get_dev_counts(all_df, wlan_df, blue_df, aps_df, path):
     yvalues = 0.1 + np.arange(len(devs_counts))
     plt.bar(x, y, color='green', figure=fig)
     yvalues += 0.4
-    plt.savefig(f'./apps/static/assets/images/summary/dev_count_{path}.png')
-    return fig
+    plt.savefig(f'./apps/static/assets/images/summary/dev_count_{path}.svg')
+    # return fig
 
 # get network data graph
 
@@ -73,11 +73,13 @@ def get_manuf_counts(all_df, path):
     fig.set_tight_layout(True)
     fig.patch.set_facecolor('#E8E5DA')
     plt.bar(x, y, figure=fig)
+    plt.yscale('log')
+
     # fig = all_df['manuf'].value_counts().plot(kind='bar', ylabel="Number of Devices", xlabel="Manufacturer")
 
-    plt.savefig(f'./apps/static/assets/images/summary/manuf_count_bar_{path}.png')
+    plt.savefig(f'./apps/static/assets/images/summary/manuf_count_bar_{path}.svg')
 
-    return fig
+    # return fig
 
 # get manufacturer count percentage pie chart
 def get_manuf_count_piechart(all_df, path):
@@ -99,9 +101,9 @@ def get_manuf_count_piechart(all_df, path):
 
     plt.ylabel("Frequency Dist of Device Manufacturer", size = 10)
  
-    plt.savefig(f'./apps/static/assets/images/summary/manuf_count_pie_{path}.png')
+    plt.savefig(f'./apps/static/assets/images/summary/manuf_count_pie_{path}.svg')
 
-    return fig
+    # return fig
 
 # get device type percentage pie chart
 def get_dev_type_piechart(all_df, path):
@@ -114,9 +116,9 @@ def get_dev_type_piechart(all_df, path):
 
     plt.ylabel("Frequency Distribution of Device Type", size = 10)
 
-    plt.savefig(f'./apps/static/assets/images/summary/dev_type_pie_{path}.png')
+    plt.savefig(f'./apps/static/assets/images/summary/dev_type_pie_{path}.svg')
 
-    return fig
+    # return fig
 
 #------------------------------------------------------------------------------------------------------------------
 

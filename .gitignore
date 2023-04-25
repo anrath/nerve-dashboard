@@ -4,6 +4,7 @@
 /api*/
 /kasra/data-flask/data/*/*.json
 /kasra/data-flask/apps/static/assets/images/*/*.png
+/kasra/data-flask/apps/static/assets/images/*/*.svg
 /kasra/data-flask/apps/templates/home/ssid_realtime.html
 
 # Byte-compiled / optimized / DLL files
