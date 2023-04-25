@@ -114,7 +114,7 @@ def pck_hist(wlan_df, file_name="pck_hist.png"):
 def create_wlan_graphs(sub_path):
     if sub_path == 'realtime':
         user_password = "http://sniffer:sniffer@"
-        server_ip = "172.25.167.71:2501/"
+        server_ip = "172.26.99.45:2501/"
 
         # Retrieved from: 
         # endpoint = "/devices/views/all_views.json"
