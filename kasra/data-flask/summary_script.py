@@ -400,6 +400,3 @@ DATA_PATH = './data'
 # DATA_SUB_PATH = ['campus', 'flats']
 # IMG_PATH = './apps/static/assets/images/bt'
 # Opening JSON files / Data imports
-
-create_summary_graphs("campus")
-create_summary_graphs("flats")

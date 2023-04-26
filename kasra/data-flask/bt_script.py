@@ -199,6 +199,3 @@ IMG_PATH = './apps/static/assets/images/bt'
 
 bt_dict = {}
 bt_time_dict = {}
-
-for sub_path in DATA_SUB_PATH:
-    create_bt_graphs(sub_path)

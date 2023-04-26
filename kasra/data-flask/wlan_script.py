@@ -195,6 +195,3 @@ IMG_PATH = './apps/static/assets/images/wlan'
 
 wlan_dict = {}
 wlan_time_dict = {}
-
-for sub_path in DATA_SUB_PATH:
-    create_wlan_graphs(sub_path)
