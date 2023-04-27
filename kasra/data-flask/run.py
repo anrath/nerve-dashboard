@@ -7,6 +7,8 @@ import os
 from   flask        import redirect, Response
 from   flask_migrate import Migrate
 from   flask_minify  import Minify
+from flask import request
+
 from   sys import exit
 
 from apps.config import config_dict
@@ -16,6 +18,7 @@ from wlan_script import *
 from bt_script import *
 from summary_script import *
 from network_graph import *
+from forms import SearchForm
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
@@ -52,6 +55,42 @@ def sumrefresh():
     return redirect("/summary_realtime.html")
 
 #END REFRESH Realtime Data
+
+
+# @app.route('/search', methods=['GET', 'POST'])
+# def search():
+#     form = SearchForm()
+#     # if request.method == 'POST' and form.validate_on_submit():
+#         # return redirect((url_for('search_results', query=form.search.data)))  # or what you want
+#     return render_template('query.html', form=form)
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    form = SearchForm(request.form) 
+    message = ""
+    if request.method == 'POST':
+        alldf = create_summary_graphs('campus')
+        search=request.form['search']
+        print(search)
+
+        #check if macaddr in df
+        if str(search) in alldf['macaddr']:
+            row = alldf.loc[alldf['macaddr'] == search]
+            rowStr = row.to_string()
+            # rowlist = row.astype(str).values.flatten().tolist()
+            message = rowStr
+            print(message)
+
+
+
+        #empty form field after processing
+        form.search.data = ""
+
+    #     return redirect('/query.html', form=form)
+    # elif request.method == 'GET':
+    #     return redirect('/query.html', form=form)
+    
+    return render_template("home/" + 'query.html', form=form, message=message)
+
 
 #------------------------------------------------------------------------------------------------------------------
 

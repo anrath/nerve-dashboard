@@ -28,8 +28,7 @@ def route_template(template):
 
         if not template.endswith('.html'):
             template += '.html'
-
-
+            
         if 'wlan' in template and 'realtime' not in template:
              # Detect the current page
             segment = get_segment(request)
