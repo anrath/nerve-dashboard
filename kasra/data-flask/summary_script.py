@@ -26,6 +26,24 @@ import requests
 #------------------------------------------------------------------------------------------------------------------
 #FUNCTIONS: 
 
+#
+def getSummaryDf():
+    all_df = pd.DataFrame(all)
+    all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']] # 'dot11.device'
+    all_df.rename(columns={
+        'kismet.device.base.key': 'key', 
+        'kismet.device.base.name': 'device_name', 
+        'kismet.device.base.type': 'device_type', 
+        'kismet.device.base.packets.total': 'num_packets', 
+        'kismet.device.base.manuf': 'manuf', 
+        'kismet.device.base.macaddr': 'macaddr', 
+        'kismet.device.base.channel': 'channel', 
+        'kismet.device.base.first_time': 'first_seen', 
+        'kismet.device.base.last_time': 'last_seen',
+        'kismet.server.uuid': 'server_uuid',
+        # 'dot11.device': 'network',
+        }, inplace=True)
+
 #get all df 
 def get_all_df(df):
     return df
@@ -393,6 +411,8 @@ def create_summary_graphs(path):
     get_manuf_counts(all_df, path)
     get_manuf_count_piechart(all_df, path)
     get_dev_type_piechart(all_df, path)
+
+    return all_df
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 # GATHERING DATA
