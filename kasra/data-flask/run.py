@@ -81,18 +81,20 @@ def sumrefresh():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm(request.form) 
-    message = ""
+    message = "origmessage"
     if request.method == 'POST':
         alldf = create_summary_graphs('campus')
         search=request.form['search']
-        print(search)
+        print(str(search))
+        print(alldf['macaddr'].tolist()[0:10])
 
         #check if macaddr in df
-        if str(search) in alldf['macaddr']:
-            row = alldf.loc[alldf['macaddr'] == search]
+        if str(search) in alldf['macaddr'].tolist():
+            row = alldf.loc[alldf['macaddr'] == str(search)]
             rowStr = row.to_string()
             # rowlist = row.astype(str).values.flatten().tolist()
             message = rowStr
+            #message='testmessage'
             print(message)
 
 
