@@ -242,9 +242,3 @@ DATA_SUB_PATH = ['campus', 'flats']
 HTML_PATH = './apps/templates/home'
 
 ssid_dict = {}
-
-for sub_path in DATA_SUB_PATH:
-    if (not os.path.isfile(f"{HTML_PATH}/ssid_{sub_path}.html")):
-        create_ssid_graph(sub_path)
-
-# create_ssid_graph('realtime')

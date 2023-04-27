@@ -27,7 +27,6 @@ DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 get_config_mode = 'Debug' if DEBUG else 'Production'
 
 try:
-
     # Load the configuration using the default values
     app_config = config_dict[get_config_mode.capitalize()]
 
@@ -37,6 +36,22 @@ except KeyError:
 app = create_app(app_config)
 
 #------------------------------------------------------------------------------------------------------------------
+
+# WLAN
+create_wlan_graphs("campus")
+create_wlan_graphs("flats")
+
+# Bluetooth
+create_bt_graphs("campus")
+create_bt_graphs("flats")
+
+# Summary
+create_summary_graphs("campus")
+create_summary_graphs("flats")
+# Network
+for sub_path in DATA_SUB_PATH:
+    if (not os.path.isfile(f"{HTML_PATH}/ssid_{sub_path}.html")):
+        create_ssid_graph(sub_path)
 
 # REFRESH Realtime Data
 @app.route('/wlanrefresh')
