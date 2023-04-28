@@ -82,6 +82,9 @@ def sumrefresh():
 def search():
     form = SearchForm(request.form) 
     message = "origmessage"
+    rowkeys = []
+    rowlist = []
+    rowdict = {}
     if request.method == 'POST':
         alldf = create_summary_graphs('campus')
         search=request.form['search']
@@ -92,10 +95,15 @@ def search():
         if str(search) in alldf['macaddr'].tolist():
             row = alldf.loc[alldf['macaddr'] == str(search)]
             rowStr = row.to_string()
-            # rowlist = row.astype(str).values.flatten().tolist()
+            rowkeys = row.keys().tolist()
+            rowlist = row.values.tolist()[0]
+            rowdict = row.to_dict()
             message = rowStr
             #message='testmessage'
-            print(message)
+            print('keys:')
+            print(rowkeys)
+            print('values:')
+            print(rowlist)
 
 
 
@@ -106,7 +114,7 @@ def search():
     # elif request.method == 'GET':
     #     return redirect('/query.html', form=form)
     
-    return render_template("home/" + 'query.html', form=form, message=message)
+    return render_template("home/" + 'query.html', form=form, message=message, row=rowdict)
 
 
 #------------------------------------------------------------------------------------------------------------------
