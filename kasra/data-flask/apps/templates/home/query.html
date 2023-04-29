@@ -5,6 +5,24 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
+<script>
+
+    /*rowkeys = document.currentScript.getAttribute('keys');
+    rowvals = document.currentScript.getAttribute('values');
+    function myFunction() {
+        var result = "";
+        for(var i = 0; i<rowkeys.length; i++) {
+            result += "<li>" + rowkeys[i] + ": " + rowvals[i];
+        }
+      
+      document.getElementById("demo").innerHTML = result;
+      console.log(result);
+    }
+
+    myFunction();
+    console.log('got here');*/
+</script>
+
 {% block content %}
 
     <!-- [ Main Content ] start -->
@@ -18,11 +36,11 @@
                             <div class="row align-items-center">
                                 <div class="col-md-12">
                                     <div class="page-header-title">
-                                        <h5 class="m-b-10">Sample Page</h5>
+                                        <h5 class="m-b-10">Query Page</h5>
                                     </div>
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                                        <li class="breadcrumb-item"><a href="javascript:">Sample Page</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript:">Query Page</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -36,7 +54,8 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5>Search Results card</h5>
+                                            <h5>Query Results</h5>
+                                            <h7>Enter a MAC Address to retrieve details about the device</h7>
                                         </div>
                                         <form action="/search" method="POST">
                                             {{form.csrf_token}}
@@ -44,10 +63,113 @@
                                             {{form.search}}
                                             {{form.submit}}
                                         </form>
-                                        <div class="card-block">
-                                            <p>
-                                            {{message}}    
-                                            </p>
+                                        <div class="card-block" id="demo">
+                                            <div class="col-xl-8 col-md-6">
+                                                {% if row != null and row.macaddr != null %}
+                                                <div class="card Recent-Users">
+                                                    <div class="card-header">
+                                                        <h5>Device Details</h5>
+                                                    </div>
+                                                    <div class="card-block px-0 py-3">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-hover">
+                                                                <tbody>
+
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Device MAC Address</h6>
+                                                                            <p class="m-0">{{row.macaddr.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Device Name</h6>
+                                                                            <p class="m-0">{{row.device_name.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Device Type</h6>
+                                                                            <p class="m-0">{{row.device_type.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Manufacturer</h6>
+                                                                            <p class="m-0">{{row.manuf.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Number of Packets Seen</h6>
+                                                                            <p class="m-0">{{row.num_packets.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                   
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Channel</h6>
+                                                                            <p class="m-0">{{row.channel.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">First and Last Seen</h6>
+                                                                            <p class="m-0">{{row.first_seen.0}} - {{row.last_seen.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Probed SSIDs</h6>
+                                                                            <p class="m-0">{{row.probed_ssids.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr class="unread">
+                                                                        <td><img class="rounded-circle" style="width:40px;"
+                                                                                    src="">
+                                                                        </td>
+                                                                        <td>
+                                                                            <h6 class="mb-1">Connected SSID</h6>
+                                                                            <p class="m-0">{{row.connected_ssid.0}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                {% if message == "MAC address invalid" %}
+                                                    <h5>Invalid MAC Address. Please Try Again.</h5>
+                                                {% endif %}
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

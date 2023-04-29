@@ -82,19 +82,29 @@ def sumrefresh():
 def search():
     form = SearchForm(request.form) 
     message = ""
+    rowkeys = []
+    rowlist = []
+    rowdict = {}
     if request.method == 'POST':
         alldf = create_summary_graphs('campus')
         search=request.form['search']
-        print(search)
+        print(str(search))
+        print(alldf['macaddr'].tolist()[0:10])
 
         #check if macaddr in df
-        if str(search) in alldf['macaddr']:
-            row = alldf.loc[alldf['macaddr'] == search]
+        if str(search) in alldf['macaddr'].tolist():
+            row = alldf.loc[alldf['macaddr'] == str(search)]
             rowStr = row.to_string()
-            # rowlist = row.astype(str).values.flatten().tolist()
-            message = rowStr
-            print(message)
+            rowkeys = row.keys().tolist()
+            rowlist = row.values.tolist()[0]
+            rowdict = row.to_dict()
 
+            print("probed ssids: ", rowdict['probed_ssids'])
+            rowdict['probed_ssids'][0] = ", ".join(rowdict['probed_ssids'][0])
+
+            message = "MAC Address valid"
+        else:
+            message = "MAC address invalid"
 
 
         #empty form field after processing
@@ -104,7 +114,7 @@ def search():
     # elif request.method == 'GET':
     #     return redirect('/query.html', form=form)
     
-    return render_template("home/" + 'query.html', form=form, message=message)
+    return render_template("home/" + 'query.html', form=form, message=message, row=rowdict)
 
 
 #------------------------------------------------------------------------------------------------------------------

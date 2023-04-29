@@ -172,7 +172,7 @@ def create_summary_graphs(path):
         all_x = requests.get(user_password + server_ip + all_endpoint, headers={"KISMET": "E62F6C667B3CF269798AC58E0D811D85"})
         all = all_x.json()
         all_df = pd.DataFrame(all)
-        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']] # 'dot11.device'
+        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid', 'dot11.device']] # 'dot11.device'
         all_df.rename(columns={
             'kismet.device.base.key': 'key', 
             'kismet.device.base.name': 'device_name', 
@@ -184,7 +184,7 @@ def create_summary_graphs(path):
             'kismet.device.base.first_time': 'first_seen', 
             'kismet.device.base.last_time': 'last_seen',
             'kismet.server.uuid': 'server_uuid',
-            # 'dot11.device': 'network',
+            'dot11.device': 'dot11_device',
             }, inplace=True)
         
         aps_endpoint = f"/devices/views/{aps_VIEWID}/devices.json"
@@ -241,12 +241,9 @@ def create_summary_graphs(path):
             'kismet.server.uuid': 'server_uuid',
             # 'dot11.device': 'network',
             }, inplace=True)
-    
-    
-    
     else:
         all_df = pd.read_json(f'{DATA_PATH}/{path}/all.json', orient='records')
-        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']] #'dot11.device'
+        all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid', 'dot11.device']] #'dot11.device'
         all_df.rename(columns={
             'kismet.device.base.key': 'key', 
             'kismet.device.base.name': 'device_name', 
@@ -258,7 +255,7 @@ def create_summary_graphs(path):
             'kismet.device.base.first_time': 'first_seen', 
             'kismet.device.base.last_time': 'last_seen',
             'kismet.server.uuid': 'server_uuid',
-            # 'dot11.device': 'network',
+            'dot11.device': 'dot11_device',
             }, inplace=True)
 
         aps_df = pd.read_json(f'{DATA_PATH}/{path}/phydot11_accesspoints.json', orient='records')
@@ -306,6 +303,43 @@ def create_summary_graphs(path):
             'kismet.server.uuid': 'server_uuid',
             # 'dot11.device': 'network',
             }, inplace=True)
+
+    
+    all_df_ap = all_df.copy()
+    all_df_ap = all_df_ap[all_df_ap['device_type'] == 'Wi-Fi AP']
+    all_df_client = all_df.copy()
+    all_df_client = all_df_client[all_df_client['device_type'] == 'Wi-Fi Client']
+    all_df_client['ap_macaddr'] = all_df_client.apply(lambda row: row['dot11_device']['dot11.device.last_bssid'], axis=1)
+
+    def get_probed_ssid(x):
+        try:
+            probed_ssid_map = x['dot11.device.probed_ssid_map']
+        except:
+            return None
+        
+        probed_ssids = []
+        for val in probed_ssid_map:
+            probed_ssids.append(val['dot11.probedssid.ssid'])
+
+        return probed_ssids
+
+    def get_advertised_ssid(x):
+        try:
+            advertised_ssid = x['dot11.device.advertised_ssid_map'][0]['dot11.advertisedssid.ssid']
+        except:
+            return None
+
+        return advertised_ssid
+    with pd.option_context("mode.chained_assignment", None):
+        all_df_client['probed_ssids'] = all_df_client.apply(lambda row: get_probed_ssid(row['dot11_device']), axis=1)
+        all_df_client['probed_ssids_len'] = all_df_client.apply(lambda row: len(row['probed_ssids']) if row['probed_ssids']!=None else 0, axis=1)
+        all_df_ap['advertised_ssid'] = all_df_ap.apply(lambda row: get_advertised_ssid(row['dot11_device']), axis=1)
+
+    all_df = pd.merge(all_df_client, all_df_ap[['macaddr', 'advertised_ssid']], left_on='ap_macaddr', right_on='macaddr', how='left')
+    del all_df['macaddr_y']
+    del all_df['dot11_device']
+    all_df.rename(columns={'macaddr_x': 'macaddr', 'advertised_ssid': 'connected_ssid'}, inplace=True)
+    all_df.sort_values(by=['probed_ssids_len'], ascending=False)
 
     get_dev_counts(all_df, wlan_df, bt_df, aps_df, path)
     get_manuf_counts(all_df, path)
