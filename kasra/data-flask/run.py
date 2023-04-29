@@ -81,7 +81,7 @@ def sumrefresh():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm(request.form) 
-    message = "origmessage"
+    message = ""
     rowkeys = []
     rowlist = []
     rowdict = {}
@@ -98,13 +98,13 @@ def search():
             rowkeys = row.keys().tolist()
             rowlist = row.values.tolist()[0]
             rowdict = row.to_dict()
-            message = rowStr
-            #message='testmessage'
-            print('keys:')
-            print(rowkeys)
-            print('values:')
-            print(rowlist)
 
+            print("probed ssids: ", rowdict['probed_ssids'])
+            rowdict['probed_ssids'][0] = ", ".join(rowdict['probed_ssids'][0])
+
+            message = "MAC Address valid"
+        else:
+            message = "MAC address invalid"
 
 
         #empty form field after processing
