@@ -148,7 +148,7 @@ def create_bt_graphs(sub_path):
             }, inplace=True)
     
     else:
-        bt_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-Bluetooth.json')
+        bt_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-Bluetooth.json', orient='records')
         bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
         bt_df.rename(columns={
             'kismet.device.base.key': 'key', 
