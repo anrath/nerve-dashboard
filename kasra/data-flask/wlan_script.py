@@ -147,7 +147,7 @@ def create_wlan_graphs(sub_path):
             }, inplace=True)
 
     else:
-        wlan_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-IEEE802.11.json')
+        wlan_df = pd.read_json(f'{DATA_PATH}/{sub_path}/phy-IEEE802.11.json', orient='records')
         wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time']]
         wlan_df.rename(columns={
             'kismet.device.base.key': 'key', 
