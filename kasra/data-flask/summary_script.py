@@ -242,7 +242,7 @@ def create_summary_graphs(path):
             # 'dot11.device': 'network',
             }, inplace=True)
     else:
-        all_df = pd.read_json(f'{DATA_PATH}/{path}/all.json')
+        all_df = pd.read_json(f'{DATA_PATH}/{path}/all.json', orient='records')
         all_df = all_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid', 'dot11.device']] #'dot11.device'
         all_df.rename(columns={
             'kismet.device.base.key': 'key', 
@@ -258,7 +258,7 @@ def create_summary_graphs(path):
             'dot11.device': 'dot11_device',
             }, inplace=True)
 
-        aps_df = pd.read_json(f'{DATA_PATH}/{path}/phydot11_accesspoints.json')
+        aps_df = pd.read_json(f'{DATA_PATH}/{path}/phydot11_accesspoints.json', orient='records')
         aps_df = aps_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
         aps_df.rename(columns={
             'kismet.device.base.key': 'key', 
@@ -273,7 +273,7 @@ def create_summary_graphs(path):
             'kismet.server.uuid': 'server_uuid',
             }, inplace=True)
 
-        bt_df = pd.read_json(f'{DATA_PATH}/{path}/phy-Bluetooth.json')
+        bt_df = pd.read_json(f'{DATA_PATH}/{path}/phy-Bluetooth.json', orient='records')
         bt_df = bt_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']]
         bt_df.rename(columns={
             'kismet.device.base.key': 'key', 
@@ -288,7 +288,7 @@ def create_summary_graphs(path):
             'kismet.server.uuid': 'server_uuid',
             }, inplace=True)
         
-        wlan_df = pd.read_json(f'{DATA_PATH}/{path}/phy-IEEE802.11.json')
+        wlan_df = pd.read_json(f'{DATA_PATH}/{path}/phy-IEEE802.11.json', orient='records')
         wlan_df = wlan_df[['kismet.device.base.key', 'kismet.device.base.name', 'kismet.device.base.type', 'kismet.device.base.packets.total', 'kismet.device.base.manuf', 'kismet.device.base.macaddr', 'kismet.device.base.channel', 'kismet.device.base.first_time', 'kismet.device.base.last_time', 'kismet.server.uuid']] #'dot11.device'
         wlan_df.rename(columns={
             'kismet.device.base.key': 'key', 
