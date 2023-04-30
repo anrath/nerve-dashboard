@@ -65,7 +65,7 @@
                                         </form>
                                         <div class="card-block" id="demo">
                                             <div class="col-xl-8 col-md-6">
-                                                {% if row != null and row.macaddr != null %}
+                                                {% if row != null and row[5] != null %} 
                                                 <div class="card Recent-Users">
                                                     <div class="card-header">
                                                         <h5>Device Details</h5>
@@ -81,7 +81,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Device MAC Address</h6>
-                                                                            <p class="m-0">{{row.macaddr.0}}</p>
+                                                                            <p class="m-0">{{row[5]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="unread">
@@ -90,7 +90,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Device Name</h6>
-                                                                            <p class="m-0">{{row.device_name.0}}</p>
+                                                                            <p class="m-0">{{row[1]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="unread">
@@ -99,7 +99,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Device Type</h6>
-                                                                            <p class="m-0">{{row.device_type.0}}</p>
+                                                                            <p class="m-0">{{row[2]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="unread">
@@ -108,7 +108,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Manufacturer</h6>
-                                                                            <p class="m-0">{{row.manuf.0}}</p>
+                                                                            <p class="m-0">{{row[4]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="unread">
@@ -117,7 +117,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Number of Packets Seen</h6>
-                                                                            <p class="m-0">{{row.num_packets.0}}</p>
+                                                                            <p class="m-0">{{row[3]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                    
@@ -127,7 +127,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Channel</h6>
-                                                                            <p class="m-0">{{row.channel.0}}</p>
+                                                                            <p class="m-0">{{row[6]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="unread">
@@ -136,7 +136,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">First and Last Seen</h6>
-                                                                            <p class="m-0">{{row.first_seen.0}} - {{row.last_seen.0}}</p>
+                                                                            <p class="m-0">{{row[7]}} - {{row[8]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                     
@@ -146,7 +146,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Probed SSIDs</h6>
-                                                                            <p class="m-0">{{row.probed_ssids.0}}</p>
+                                                                            <p class="m-0">{{row[11]}}</p>
                                                                         </td>
                                                                     </tr>
 
@@ -156,7 +156,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <h6 class="mb-1">Connected SSID</h6>
-                                                                            <p class="m-0">{{row.connected_ssid.0}}</p>
+                                                                            <p class="m-0">{{row[12]}}</p>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>

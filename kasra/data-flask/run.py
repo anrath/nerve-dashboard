@@ -89,7 +89,7 @@ def search():
         alldf = create_summary_graphs('campus')
         search=request.form['search']
         print(str(search))
-        print(alldf['macaddr'].tolist()[0:10])
+        print(alldf['macaddr'].tolist()[0:20])
 
         #check if macaddr in df
         if str(search) in alldf['macaddr'].tolist():
@@ -100,7 +100,11 @@ def search():
             rowdict = row.to_dict()
 
             print("probed ssids: ", rowdict['probed_ssids'])
-            rowdict['probed_ssids'][0] = ", ".join(rowdict['probed_ssids'][0])
+            print("rowdict: ", rowdict)
+            print("rowlist: ", rowlist)
+
+            # if 0 in rowdict['probed_ssids']:
+            #     rowdict['probed_ssids'] = ", ".join(rowdict['probed_ssids'][0])
 
             message = "MAC Address valid"
         else:
@@ -114,7 +118,7 @@ def search():
     # elif request.method == 'GET':
     #     return redirect('/query.html', form=form)
     
-    return render_template("home/" + 'query.html', form=form, message=message, row=rowdict)
+    return render_template("home/" + 'query.html', form=form, message=message, row=rowlist)
 
 
 #------------------------------------------------------------------------------------------------------------------
