@@ -1,11 +1,11 @@
 # data files
 */data/*/
-/kasra/example
-/api*/
-/kasra/data-flask/data/*/*.json
-/kasra/data-flask/apps/static/assets/images/*/*.png
-/kasra/data-flask/apps/static/assets/images/*/*.svg
-/kasra/data-flask/apps/templates/home/ssid_realtime.html
+archive/kasra/example
+archive/api*/
+archive/kasra/data-flask/data/*/*.json
+archive/kasra/data-flask/apps/static/assets/images/*/*.png
+archive/kasra/data-flask/apps/static/assets/images/*/*.svg
+archive/kasra/data-flask/apps/templates/home/ssid_realtime.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
