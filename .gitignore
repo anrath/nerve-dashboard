@@ -2,10 +2,10 @@
 */data/*/
 archive/kasra/example
 archive/api*/
-archive/kasra/data-flask/data/*/*.json
-archive/kasra/data-flask/apps/static/assets/images/*/*.png
-archive/kasra/data-flask/apps/static/assets/images/*/*.svg
-archive/kasra/data-flask/apps/templates/home/ssid_realtime.html
+archive/kasra/nerve/data/*/*.json
+archive/kasra/nerve/apps/static/assets/images/*/*.png
+archive/kasra/nerve/apps/static/assets/images/*/*.svg
+archive/kasra/nerve/apps/templates/home/ssid_realtime.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
