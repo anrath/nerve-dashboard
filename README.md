@@ -10,5 +10,5 @@
 - `./archive/api_flats.zip` -- Flats run for ~15 hours
 
 ## Website
-- `./data-flask/` includes a templated Flask website
+- `./data-flask/` includes a templated Flask website. Execute `python run.py` to start the dashboard.
 - `./data-flask/templates/home` -- includes the pages for `wlan.html` and `bluetooth.html`. `index.html` will include our summary statistics and a link to the network graph
